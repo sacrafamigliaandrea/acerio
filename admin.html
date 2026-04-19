@@ -1,0 +1,542 @@
+<!DOCTYPE html><html lang="it"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Progetto Ferraboschi/Cerioli"><meta name="copyright" content="2026 Tutti i diritti riservati">
+<title>TI ASCOLTO! — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--g:#1B6D3F;--gl:#E8F5EE;--gd:#145230;--tl:#1A7F6D;--am:#C28B0A;--co:#B8432E;--pu:#6B4FA0;--sk:#2E7CAF;--bg:#F5F5F0;--cd:#FFF;--tx:#2C2C2C;--mu:#7A7A72;--bd:#E8E8E2;--f:'DM Sans',sans-serif;--r:12px}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:var(--f);background:var(--bg);color:var(--tx);overflow-x:hidden}
+.top{background:var(--g);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.top h1{font-size:18px;font-weight:700}.top select{padding:6px 10px;border-radius:8px;border:none;font-family:var(--f);font-size:12px}
+
+/* HERO EVIDENCE CARDS */
+.heroes{display:flex;gap:14px;padding:20px 24px;max-width:1400px;margin:0 auto}
+.hero-card{flex:1;background:var(--cd);border-radius:var(--r);padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);border-left:4px solid}
+.hero-card .n{font-size:36px;font-weight:700;line-height:1}.hero-card .l{font-size:11px;color:var(--mu);margin-top:4px;line-height:1.4}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 24px 40px;max-width:1400px;margin:0 auto}
+.card{background:var(--cd);border-radius:var(--r);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bd)}
+.card.full{grid-column:1/-1}
+.card h2{font-size:14px;font-weight:700;color:var(--g);margin-bottom:2px}
+.card .sub{font-size:10px;color:var(--mu);margin-bottom:14px}
+.ev{padding:10px 14px;border-radius:8px;margin-top:12px;font-size:11px;line-height:1.6}
+.ev-warn{background:#FEF3D6;color:#7a5a0a;border-left:4px solid var(--am)}
+.ev-alert{background:#FDECE8;color:#7a2a1a;border-left:4px solid var(--co)}
+.ev-good{background:var(--gl);color:var(--gd);border-left:4px solid var(--g)}
+.ev-info{background:#E8F2FA;color:#1a5a8a;border-left:4px solid var(--sk)}
+canvas{max-height:300px!important}
+
+/* HEATMAP */
+.hm{display:grid;gap:2px;margin-top:8px}.hm-row{display:flex;gap:2px;align-items:center}
+.hm-label{width:80px;font-size:9px;font-weight:500;text-align:right;padding-right:6px;flex-shrink:0}
+.hm-cell{flex:1;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;min-width:0}
+.hm-header{display:flex;gap:2px;padding-left:82px;margin-bottom:2px}.hm-htxt{flex:1;font-size:8px;color:var(--mu);text-align:center}
+
+/* DIVERGENT BARS */
+.div-row{display:flex;align-items:center;gap:4px;margin-bottom:4px;font-size:10px}
+.div-label{width:100px;text-align:right;flex-shrink:0;font-weight:500}
+.div-bar{flex:1;height:22px;background:var(--bd);border-radius:4px;position:relative;overflow:hidden}
+.div-left{position:absolute;right:50%;height:100%;border-radius:4px 0 0 4px}
+.div-right{position:absolute;left:50%;height:100%;border-radius:0 4px 4px 0}
+.div-center{position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--mu);opacity:.3}
+.div-val{width:28px;font-size:9px;font-weight:600;text-align:center}
+
+/* GAUGES */
+.gauges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.gauge{width:100px;text-align:center}
+.gauge svg{width:90px;height:50px}
+.gauge .gl{font-size:9px;color:var(--mu);margin-top:2px}
+
+/* LOLLIPOP */
+.lol-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.lol-label{width:140px;font-size:10px;text-align:right;flex-shrink:0}
+.lol-track{flex:1;height:2px;background:var(--bd);position:relative;border-radius:1px}
+.lol-dot{width:14px;height:14px;border-radius:50%;position:absolute;top:-6px;transition:left .3s}
+.lol-line{position:absolute;left:0;top:0;height:2px;border-radius:1px}
+.lol-thresh{position:absolute;top:-10px;width:1px;height:22px;background:var(--mu);opacity:.3}
+.lol-val{width:30px;font-size:10px;font-weight:600}
+
+/* LABELED DISTRIBUTION */
+.ld{margin-bottom:14px;padding:10px 12px;background:var(--bg);border-radius:8px}
+.ld-q{font-size:11px;font-weight:600;margin-bottom:6px;color:var(--tx)}
+.ld-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.ld-bar{height:16px;border-radius:3px;min-width:2px;transition:width .3s}
+.ld-txt{font-size:10px;flex:1;min-width:0}.ld-pct{font-size:10px;font-weight:600;width:32px;text-align:right;flex-shrink:0}
+
+.load{text-align:center;padding:60px;font-size:14px;color:var(--mu)}
+</style></head><body>
+
+<div id="gate" style="height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)">
+<div style="background:#fff;padding:40px;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);text-align:center;max-width:360px;width:100%">
+<h1 style="font-size:24px;color:var(--g);margin-bottom:4px">TI ASCOLTO!</h1>
+<p style="font-size:12px;color:var(--mu);margin-bottom:20px">Area riservata — Dashboard docenti</p>
+<input type="password" id="pwd" placeholder="Password" style="width:100%;padding:12px;border:2px solid var(--bd);border-radius:10px;font-family:var(--f);font-size:16px;text-align:center;margin-bottom:10px" onkeydown="if(event.key==='Enter')tryPwd()">
+<button onclick="tryPwd()" style="width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:var(--f);font-size:15px;font-weight:600;cursor:pointer">Accedi</button>
+<p id="pwdErr" style="font-size:11px;color:var(--co);margin-top:8px;display:none">Password errata</p>
+</div></div>
+
+<div id="dash" style="display:none">
+<div class="top"><h1>TI ASCOLTO! — Dashboard docenti</h1>
+<div style="display:flex;gap:8px;align-items:center">
+<span id="statusBadge" style="padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600"></span>
+<select id="filtro"><option value="all">Tutte le classi</option><option value="1ª">1ª</option><option value="2ª">2ª</option><option value="3ª">3ª</option></select>
+<button onclick="toggleSurvey()" id="btnToggle" style="padding:6px 14px;border-radius:8px;border:none;font-family:var(--f);font-size:12px;font-weight:600;background:#fff;color:var(--am);cursor:pointer">Chiudi sondaggio</button>
+<button onclick="genDossier()" style="padding:6px 14px;border-radius:8px;border:none;font-family:var(--f);font-size:12px;font-weight:600;background:#fff;color:var(--g);cursor:pointer">Genera Dossier</button>
+<button onclick="clearData()" style="padding:6px 14px;border-radius:8px;border:none;font-family:var(--f);font-size:12px;font-weight:600;background:#fff;color:var(--co);cursor:pointer">Cancella dati</button>
+</div></div>
+<div id="heroArea"></div>
+<div class="grid" id="content"></div>
+</div>
+
+<script>
+const PWD='comesei26';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxWhv-dFGBkBTpLfvlsbB3RQfKSfPpBi-_NBcdR8xn0cG4EFe3dm6RWM1hwGvc-w9csaQ/exec';
+let surveyOpen=true;
+
+function tryPwd(){if(document.getElementById('pwd').value===PWD){document.getElementById('gate').style.display='none';document.getElementById('dash').style.display='block';checkStatus();loadData();}else{document.getElementById('pwdErr').style.display='block';document.getElementById('pwd').value='';}}
+
+function checkStatus(){
+  fetch(SCRIPT_URL+'?action=status').then(r=>r.json()).then(d=>{
+    surveyOpen=d.status!=='closed';updateStatusUI();
+  }).catch(()=>{});
+}
+function updateStatusUI(){
+  const badge=document.getElementById('statusBadge');const btn=document.getElementById('btnToggle');
+  if(surveyOpen){badge.textContent='APERTO';badge.style.background='var(--gl)';badge.style.color='var(--g)';btn.textContent='Chiudi sondaggio';btn.style.color='var(--am)';}
+  else{badge.textContent='CHIUSO';badge.style.background='var(--col)';badge.style.color='var(--co)';btn.textContent='Apri sondaggio';btn.style.color='var(--g)';}
+}
+function toggleSurvey(){
+  const action=surveyOpen?'chiudere':'aprire';
+  if(!confirm('Vuoi '+action+' il sondaggio?'))return;
+  fetch(SCRIPT_URL+'?action=toggle&pwd='+PWD).then(r=>r.json()).then(d=>{
+    if(d.status){surveyOpen=d.status!=='closed';updateStatusUI();alert('Sondaggio '+(surveyOpen?'aperto':'chiuso')+'.');}
+    else alert('Errore: '+JSON.stringify(d));
+  }).catch(e=>alert('Errore di rete.'));
+}
+function clearData(){
+  if(!confirm('ATTENZIONE: stai per cancellare TUTTI i dati delle risposte. Questa operazione è irreversibile.\n\nSei sicuro?'))return;
+  if(!confirm('Conferma definitiva: cancellare tutti i dati?'))return;
+  fetch(SCRIPT_URL+'?action=clear&pwd='+PWD).then(r=>r.json()).then(d=>{
+    if(d.cleared){alert('Cancellati '+d.deletedRows+' record. Ricarico la pagina.');location.reload();}
+    else alert('Errore: '+JSON.stringify(d));
+  }).catch(e=>alert('Errore di rete.'));
+}
+
+const CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQWETdZqhw1rVJPeoYTGTUpHGbUQGN5SmStO_Uq7klBb7fMEKYZ7oPQGmrmyI1RuSWQ3TQsGmRrnEEy/pub?gid=1621012532&single=true&output=csv';
+const SUBS=['Italiano','Inglese','Storia','Geografia','Matematica','Scienze','Tecnologia','Arte e Imm.','Musica','Spagnolo','Ed. Fisica','Religione','Ed. Civica','Comportam.'];
+const SUB_C=['ITAL','INGL','STOR','GEOG','MATE','SCIE','TECN','ARTE','MUSI','SPAN','EDFI','RELI','EDCI','COMP'];
+const MDIM=['Interesse','Realtà','Difficoltà','Chiarezza','Attivazione','Consegna'];
+const SDIM=['Come imparo','Ritmo','Concentrazione','Capisco e studio','Socialità','Aspettative'];
+const SCOL=['#2D8B57','#C28B0A','#B8432E','#6B4FA0','#1A7F6D','#2E7CAF'];
+const SNUMS=[5,5,7,12,5,8];
+
+let ALL=[];
+function loadData(){
+  fetch(CSV_URL).then(r=>r.text()).then(csv=>{
+    const rows=Papa.parse(csv,{skipEmptyLines:true}).data;
+    if(rows.length<3){document.getElementById('content').innerHTML='<div class="load">Nessun dato.</div>';return;}
+    const hdr=rows[1];
+    for(let i=2;i<rows.length;i++){const o={};hdr.forEach((h,j)=>{if(h&&h.trim())o[h.trim()]=rows[i][j]||'';});if(o.timestamp||o.nome)ALL.push(o);}
+    document.getElementById('filtro').onchange=()=>render();
+    render();
+  }).catch(()=>{document.getElementById('content').innerHTML='<div class="load">Errore CSV.</div>';});
+}
+
+function D(){const f=document.getElementById('filtro').value;return f==='all'?ALL:ALL.filter(r=>r.classe===f);}
+function avg(R,k){let s=0,c=0;R.forEach(r=>{const v=+r[k];if(v){s+=v;c++;}});return c?s/c:0;}
+function dist(R,k){let d=[0,0,0];R.forEach(r=>{const v=+r[k];if(v>=1&&v<=3)d[v-1]++;});const t=d[0]+d[1]+d[2];return t?d.map(x=>Math.round(x/t*100)):[0,0,0];}
+function pct(R,k,v){let c=0,t=0;R.forEach(r=>{const x=+r[k];if(x){t++;if(x===v)c++;}});return t?Math.round(c/t*100):0;}
+function ldist(R,key,question,opts,colors){
+  const d=dist(R,key);colors=colors||['var(--g)','var(--am)','var(--co)'];
+  let h='<div class="ld"><div class="ld-q">'+question+'</div>';
+  opts.forEach((o,i)=>{
+    h+='<div class="ld-row"><div class="ld-bar" style="width:'+Math.max(d[i],2)+'%;background:'+colors[i]+'"></div><div class="ld-txt" style="color:'+colors[i]+'">'+o+'</div><div class="ld-pct" style="color:'+colors[i]+'">'+d[i]+'%</div></div>';
+  });
+  h+='</div>';return h;
+}
+
+function render(){
+  const R=D(),N=R.length;if(!N){document.getElementById('content').innerHTML='<div class="load">Nessun dato.</div>';document.getElementById('heroArea').innerHTML='';return;}
+
+  // === HERO EVIDENCE CARDS — le 4 domande vere ===
+  // 1. Dove mettono la scuola? (ranking medio di "Andare bene a scuola" = R_1)
+  let rankSum=0,rankN=0;R.forEach(r=>{const v=+r['R_1'];if(v){rankSum+=v;rankN++;}});
+  const rankAvg=rankN?rankSum/rankN:0;const rankPos=rankAvg?rankAvg.toFixed(1):'—';
+  const rankCol=rankAvg<=2?'var(--g)':rankAvg<=4?'var(--am)':'var(--co)';
+
+  // 2. Si sentono attivi o passivi? (% passivi media su TUTTE le materie)
+  let totPass=0,totPassN=0;
+  SUB_C.forEach(sc=>{const p=pct(R,'M_'+sc+'_ATV',1);if(p!==undefined){totPass+=p;totPassN++;}});
+  const avgPass=totPassN?Math.round(totPass/totPassN):0;
+  const passCol=avgPass>40?'var(--co)':avgPass>20?'var(--am)':'var(--g)';
+
+  // 3. Capiscono le spiegazioni? (% che capisce = opzione 3, media su tutte le materie)
+  let totCap=0,totCapN=0;
+  SUB_C.forEach(sc=>{const p=pct(R,'M_'+sc+'_SPG',3);if(p!==undefined){totCap+=p;totCapN++;}});
+  const avgCap=totCapN?Math.round(totCap/totCapN):0;
+  const capCol=avgCap>60?'var(--g)':avgCap>40?'var(--am)':'var(--co)';
+
+  // 4. Leggono le consegne? (% che non rilegge = ICC_A1 opzione 3)
+  const noLegge=pct(R,'ICC_A1',3);
+  const legCol=noLegge>40?'var(--co)':noLegge>20?'var(--am)':'var(--g)';
+
+  let hh='<div class="heroes">';
+  hh+='<div class="hero-card" style="border-color:'+rankCol+'"><div class="n" style="color:'+rankCol+'">'+rankPos+'\u00ba</div><div class="l">posizione della scuola<br>nella classifica delle priorit\u00e0</div></div>';
+  hh+='<div class="hero-card" style="border-color:'+passCol+'"><div class="n" style="color:'+passCol+'">'+avgPass+'%</div><div class="l">si sente passivo<br>durante le lezioni</div></div>';
+  hh+='<div class="hero-card" style="border-color:'+capCol+'"><div class="n" style="color:'+capCol+'">'+avgCap+'%</div><div class="l">capisce quando<br>gli insegnanti spiegano</div></div>';
+  hh+='<div class="hero-card" style="border-color:'+legCol+'"><div class="n" style="color:'+legCol+'">'+noLegge+'%</div><div class="l">non rilegge<br>le consegne</div></div>';
+  hh+='</div>';
+  document.getElementById('heroArea').innerHTML=hh;
+
+  let h='';
+
+  // === 1. RADAR: PROFILO MEDIO ===
+  h+='<div class="card"><h2>Profilo medio dello studente</h2><div class="sub">Le 6 dimensioni — media su scala 1-3</div><canvas id="chRadar"></canvas></div>';
+
+  // === 2. HEATMAP: MATERIE × DIMENSIONI ===
+  const HM_WORDS=[['No','Un po\'','Molto'],['No','Un po\'','S\u00ec'],['Facile','Cos\u00ec','Difficile'],['No','A volte','S\u00ec'],['Passivo','Dipende','Attivo'],['No','A volte','Sempre']];
+  h+='<div class="card"><h2>Mappa termica: materie × dimensioni</h2><div class="sub">Colore e parola: la sintesi di ogni materia su ogni dimensione</div>';
+  h+='<div class="hm-header">';MDIM.forEach(d=>{h+='<div class="hm-htxt">'+d+'</div>';});h+='</div>';
+  SUBS.forEach((sn,si)=>{
+    h+='<div class="hm-row"><div class="hm-label">'+sn+'</div>';
+    MDIM.forEach((dn,di)=>{
+      const k='M_'+SUB_C[si]+'_'+['ARG','REA','DIF','SPG','ATV','CON'][di];
+      const a=avg(R,k);const c=di===2?hmColRev(a):hmCol(a);
+      const wi=a<1.5?0:a<2.5?1:2;const word=HM_WORDS[di][wi];
+      h+='<div class="hm-cell" style="background:'+c+'">'+word+'</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+
+  // === 3. DIVERGENT: ATTIVI vs PASSIVI per materia ===
+  h+='<div class="card"><h2>Attivi vs Passivi per materia</h2><div class="sub">Rosso = passivi (opz. 1) | Verde = attivi (opz. 3)</div>';
+  SUBS.forEach((sn,si)=>{
+    const k='M_'+SUB_C[si]+'_ATV';const p1=pct(R,k,1),p3=pct(R,k,3);
+    h+='<div class="div-row"><div class="div-label">'+sn+'</div><div class="div-bar">';
+    h+='<div class="div-left" style="width:'+p1/2+'%;right:50%;background:var(--co)"></div>';
+    h+='<div class="div-right" style="width:'+p3/2+'%;background:var(--g)"></div>';
+    h+='<div class="div-center"></div></div>';
+    h+='<div class="div-val" style="color:var(--co)">'+p1+'</div><div class="div-val" style="color:var(--g)">'+p3+'</div></div>';
+  });
+  let worstPassive=SUB_C.map((sc,i)=>({n:SUBS[i],p:pct(R,'M_'+sc+'_ATV',1)})).sort((a,b)=>b.p-a.p)[0];
+  if(worstPassive.p>30)h+='<div class="ev ev-alert"><strong>Evidenza:</strong> in '+worstPassive.n+' il '+worstPassive.p+'% degli studenti si sente passivo. Non \u00e8 il contenuto: \u00e8 il metodo.</div>';
+  h+='</div>';
+
+  // === 4. ICC: FRASI COMPRENSIBILI ===
+  h+='<div class="card full"><h2>La consegna: chi non legge e cosa non funziona</h2><div class="sub">Cosa succede davvero quando assegni un compito?</div>';
+  h+='<div style="display:flex;gap:20px"><div style="flex:1">';
+  h+='<div style="font-size:12px;font-weight:700;color:var(--co);margin:4px 0 8px">Lo studente quando riceve una consegna:</div>';
+  h+=ldist(R,'ICC_A1','Rileggere la consegna',['Rilegge sempre con attenzione','Legge veloce, poi se serve torna','Non rilegge, pensa di aver capito']);
+  h+=ldist(R,'ICC_A2','Prima di iniziare',['Si prende il tempo per capire','Occhiata rapida e parte','Parte subito senza pensarci']);
+  h+=ldist(R,'ICC_A3','Se la consegna \u00e8 lunga',['Legge tutto con attenzione','Legge pi\u00f9 o meno tutto','Le prime righe gli bastano']);
+  h+=ldist(R,'ICC_A4','Mentre gli altri chiedono',['Ha dubbi anche lui','Capisce ma non sempre','Ha gi\u00e0 capito tutto']);
+  h+='</div><div style="flex:1">';
+  h+='<div style="font-size:12px;font-weight:700;color:var(--am);margin:4px 0 8px">La consegna che non arriva:</div>';
+  h+=ldist(R,'ICC_B1','Esempio nella consegna',['La scritta basta','Un esempio a volte aiuta','Senza esempio non parte']);
+  h+=ldist(R,'ICC_B2','Spiegazione a voce',['Capisce leggendo','Aiuta un po\'','Senza voce non capisce']);
+  h+=ldist(R,'ICC_B3','Capire vs fare',['Fa quello che chiedono','Ogni tanto sbaglia il senso','Fa spesso una cosa diversa']);
+  h+=ldist(R,'ICC_B4','Consegna lunga scritta',['Legge senza problemi','Lo rallenta','Non la legge nemmeno']);
+  h+='</div></div>';
+  const nonLegge=pct(R,'ICC_A1',3),servVoce=pct(R,'ICC_B2',3),faDiverso=pct(R,'ICC_B3',3);
+  if(nonLegge>40&&servVoce>40)h+='<div class="ev ev-alert"><strong>Doppio problema:</strong> il '+nonLegge+'% non rilegge le consegne e il '+servVoce+'% capisce solo con spiegazione orale. Servono consegne pi\u00f9 chiare E un lavoro sulla lettura attenta.</div>';
+  else if(nonLegge>40)h+='<div class="ev ev-warn"><strong>Problema studente:</strong> il '+nonLegge+'% non legge le consegne. Le consegne funzionano, gli studenti le saltano.</div>';
+  else if(servVoce>40)h+='<div class="ev ev-warn"><strong>Problema consegna:</strong> il '+servVoce+'% capisce solo con spiegazione orale. Consegne scritte da ripensare: pi\u00f9 brevi, con esempi.</div>';
+  else h+='<div class="ev ev-good"><strong>Buon equilibrio:</strong> la maggioranza legge e capisce le consegne.</div>';
+  if(faDiverso>30)h+='<div class="ev ev-warn" style="margin-top:6px"><strong>Segnale:</strong> il '+faDiverso+'% fa spesso qualcosa di diverso da ci\u00f2 che viene chiesto.</div>';
+  h+='</div>';
+
+  // === 5. ASPETTATIVE INSEGNANTE ===
+  h+='<div class="card"><h2>Cosa si aspettano dalla scuola</h2><div class="sub">Distribuzione completa delle risposte su didattica e aspettative</div>';
+  h+=ldist(R,'S6_1','Il ritmo delle lezioni',['Le lezioni uguali non lo disturbano','Vorrebbe pi\u00f9 variet\u00e0','Se non cambia ritmo, si spegne']);
+  h+=ldist(R,'S6_2','Il coinvolgimento emotivo',['Impara bene anche senza','Il coinvolgimento aiuta ma non \u00e8 tutto','Se non lo coinvolge, non gli arriva nulla']);
+  h+=ldist(R,'S6_3','Spazio per la creativit\u00e0',['Il programma cos\u00ec va bene','Un po\' pi\u00f9 di creativit\u00e0 non guasterebbe','Ha bisogno di esprimersi e creare']);
+  h+=ldist(R,'S6_4','Collegamento col mondo reale',['Non gli serve','A volte vorrebbe capire a cosa serve','Se non \u00e8 collegato alla realt\u00e0, non ha senso']);
+  h+=ldist(R,'S6_5','L\'insegnante severo ma giusto',['Preferisce meno esigenza','Dipende dalla situazione','Chi pretende il massimo tira fuori il meglio']);
+  h+=ldist(R,'S6_6','Esigenza e rispetto',['Troppa esigenza no','Il rispetto \u00e8 importante, l\'esigenza dipende','Rispetto + alta aspettativa: combinazione perfetta']);
+  h+=ldist(R,'S6_7','I compiti ripetitivi e uguali per tutti',['Lo aiutano a esercitarsi','Alcuni s\u00ec, altri no','Sono una perdita di tempo']);
+  h+=ldist(R,'S6_8','Scegliere come affrontare un compito',['Preferisce istruzioni precise','Un po\' di guida con un po\' di scelta','Lavora meglio quando decide il suo approccio']);
+  // Evidence based on option 3 majorities
+  const aspKeys=[['S6_1','vuole variet\u00e0 di ritmo'],['S6_2','ha bisogno di coinvolgimento emotivo'],['S6_4','vuole collegamento col reale'],['S6_7','rifiuta i compiti ripetitivi']];
+  let strong=aspKeys.filter(([k])=>pct(R,k,3)>50).map(([,l])=>l);
+  if(strong.length)h+='<div class="ev ev-info"><strong>Tendenza chiara:</strong> la maggioranza '+strong.join(', ')+'. Sono le caratteristiche della generazione Alpha: non difetti, ma tratti su cui costruire.</div>';
+  h+='</div>';
+
+  // === 6. STUDIO E MEMORIA ===
+  h+='<div class="card"><h2>Come studiano e cosa resta</h2><div class="sub">Il metodo di studio e la ritenzione reale</div>';
+  h+=ldist(R,'S4_7','Come si preparano alla verifica',['Cercano di capire, non a memoria','Un po\' a memoria, un po\' ragionando','Ripetono finch\u00e9 non entra in testa']);
+  h+=ldist(R,'S4_9','Cosa resta dopo qualche giorno dalla verifica',['Quello che studiano resta a lungo','Qualcosa resta, qualcosa no','Dopo pochi giorni dimenticato quasi tutto']);
+  h+=ldist(R,'S4_10','Ricordare e passione',['Ricordano anche ci\u00f2 che non li appassiona','Le cose che piacciono restano meglio','Se non appassiona, non resta nulla']);
+  h+=ldist(R,'S4_11','Perch\u00e9 studiano?',['Perch\u00e9 vogliono capire davvero','Un po\' per il voto, un po\' per interesse','Solo perch\u00e9 c\'\u00e8 la verifica']);
+  h+=ldist(R,'S4_12','Quando non capiscono qualcosa',['Cercano un altro modo per capire','A volte rileggono, a volte cercano alternative','Rileggono le stesse cose sperando che entrino']);
+  const memPct=pct(R,'S4_9',3),vPct=pct(R,'S4_11',3);
+  if(memPct>40||vPct>40)h+='<div class="ev ev-alert"><strong>Dato critico:</strong> il '+memPct+'% dimentica tutto dopo pochi giorni, il '+vPct+'% studia solo per il voto. Memorizzare non \u00e8 imparare.</div>';
+  h+='</div>';
+
+  // === 7. REGOLE ===
+  h+='<div class="card"><h2>Come vivono le regole</h2><div class="sub">La percezione delle regole, delle note e della disciplina</div>';
+  h+=ldist(R,'S9_1','Le regole della scuola',['Molte non hanno senso','Alcune s\u00ec, altre no','Sono giuste e servono']);
+  h+=ldist(R,'S9_2','Mi spiegano il perch\u00e9 delle regole',['Mi vengono solo imposte','A volte s\u00ec, a volte no','Mi spiegano sempre il perch\u00e9']);
+  h+=ldist(R,'S9_3','Quando ricevo una nota',['Non cambia nulla','Dipende dalla situazione','Mi fa capire cosa migliorare']);
+  h+=ldist(R,'S9_6','Equit\u00e0 nell\'applicare le regole',['Non vengono applicate in modo uguale','Pi\u00f9 o meno equi','Tutti trattati allo stesso modo']);
+  h+=ldist(R,'S9_7','Rispetto e comportamento',['Non dipende da come mi trattano','Il rispetto aiuta ma non \u00e8 tutto','Se mi rispettano, do il massimo']);
+  h+=ldist(R,'S9_8','Le punizioni come mi fanno sentire',['Solo umiliato/a','Dipende da come vengono date','Capisco che \u00e8 per il mio bene']);
+  h+=ldist(R,'S9_9','Dialogo o punizione',['Le punizioni servono pi\u00f9 delle parole','Dipende dalla situazione','Parlarne \u00e8 sempre meglio']);
+  h+=ldist(R,'S9_10','Il disturbo dei compagni',['C\'\u00e8 abbastanza disciplina','Ci sono problemi ma si gestiscono','\u00c8 un problema serio']);
+  if(pct(R,'S9_7',3)>50)h+='<div class="ev ev-info"><strong>Evidenza forte:</strong> il '+pct(R,'S9_7',3)+'% dice: se trattato con rispetto do il massimo. La relazione \u00e8 la leva pi\u00f9 potente.</div>';
+  if(pct(R,'S9_9',3)>50)h+='<div class="ev ev-info" style="margin-top:6px"><strong>Preferenza chiara:</strong> il '+pct(R,'S9_9',3)+'% preferisce il dialogo alla punizione.</div>';
+  h+='</div>';
+
+  // === 8. CITTADINANZA DIGITALE ===
+  h+='<div class="card full"><h2>Cittadinanza digitale: il percorso funziona?</h2><div class="sub">Cosa hanno imparato gli studenti dal percorso di sicurezza online, CyberEscape, Commissariato Digitale e Patto Digitale</div>';
+  h+=ldist(R,'S10_1','Riconoscere i rischi online',['Non mi hanno insegnato molto','Ho imparato qualcosa','So riconoscere i pericoli grazie alla scuola']);
+  h+=ldist(R,'S10_2','Phishing e truffe online',['Non saprei riconoscerli','A volte li riconosco','Li riconosco subito']);
+  h+=ldist(R,'S10_3','Cyberbullismo: cosa fare',['Non saprei come reagire','Ho un\'idea ma non sono sicuro','So cosa fare e a chi rivolgermi']);
+  h+=ldist(R,'S10_4','Il mio comportamento online dopo le attivit\u00e0',['Mi comporto come prima','Qualcosa \u00e8 cambiato','Il mio comportamento \u00e8 molto cambiato']);
+  h+=ldist(R,'S10_5','Simulazioni (CyberEscape, Commissariato) vs spiegazioni tradizionali',['Le spiegazioni tradizionali funzionano','Entrambi i metodi funzionano','Le simulazioni insegnano molto di pi\u00f9']);
+  h+=ldist(R,'S10_6','Parlare con i genitori di sicurezza online',['Non ne parlo mai','Ogni tanto ne parliamo','Ne parlo spesso grazie alla scuola']);
+  h+=ldist(R,'S10_7','Consapevolezza della propria immagine online',['Non ci penso molto','Ci penso ogni tanto','Sono molto attento/a']);
+  h+=ldist(R,'S10_8','Distinguere informazioni vere da false',['Faccio fatica','A volte ci riesco','Controllo sempre le fonti']);
+  h+=ldist(R,'S10_9','Quanto mi hanno coinvolto queste attivit\u00e0',['Non particolarmente','Abbastanza coinvolgenti','Tra le pi\u00f9 coinvolgenti della scuola']);
+  // Rich evidence
+  const simP=pct(R,'S10_5',3),cambP=pct(R,'S10_4',3),genP=pct(R,'S10_6',3),coinP=pct(R,'S10_9',3);
+  if(simP>40)h+='<div class="ev ev-good"><strong>Le simulazioni funzionano:</strong> il '+simP+'% dice che CyberEscape e il Commissariato Digitale insegnano pi\u00f9 delle spiegazioni tradizionali. La didattica esperienziale produce risultati misurabili.</div>';
+  if(cambP>30)h+='<div class="ev ev-good" style="margin-top:6px"><strong>Impatto reale:</strong> il '+cambP+'% ha cambiato concretamente il proprio comportamento online dopo le attivit\u00e0. Non \u00e8 teoria: \u00e8 trasformazione.</div>';
+  if(genP>30)h+='<div class="ev ev-info" style="margin-top:6px"><strong>Ponte scuola-famiglia:</strong> il '+genP+'% parla con i genitori di sicurezza online grazie a quello che ha imparato a scuola. Il percorso esce dall\'aula.</div>';
+  if(coinP>40)h+='<div class="ev ev-info" style="margin-top:6px"><strong>Coinvolgimento:</strong> il '+coinP+'% considera la cittadinanza digitale tra le esperienze pi\u00f9 coinvolgenti della scuola.</div>';
+  h+='</div>';
+
+  // === 9. CONCENTRAZIONE ===
+  h+='<div class="card"><h2>Concentrazione e disturbo</h2><div class="sub">Impatto dell\'ambiente classe sull\'apprendimento</div>';
+  h+=ldist(R,'S3_1','Seguire una spiegazione senza distrarsi',['Resto concentrato fino alla fine','Mi distraggo ma recupero','Mi distraggo continuamente']);
+  h+=ldist(R,'S3_2','Quando i compagni disturbano',['Riesco a concentrarmi lo stesso','Mi d\u00e0 fastidio ma ce la faccio','Non capisco pi\u00f9 nulla']);
+  h+=ldist(R,'S3_4','Se qualcuno interrompe la spiegazione',['Riprendo subito il filo','Fatica ma ci riesco','Perdo completamente il filo']);
+  h+=ldist(R,'S3_6','Il comportamento degli altri e il mio impegno',['Non mi condiziona','Ogni tanto s\u00ec','Se gli altri mollano, mollo anch\'io']);
+  h+=ldist(R,'S3_7','Il disturbo in classe',['C\'\u00e8 abbastanza ordine','A volte \u00e8 un problema','Il disturbo \u00e8 un problema serio']);
+  if(pct(R,'S3_7',3)>40)h+='<div class="ev ev-alert"><strong>Ambiente classe:</strong> il '+pct(R,'S3_7',3)+'% considera il disturbo un problema serio. Non \u00e8 disciplina: \u00e8 un ostacolo per chi vuole imparare.</div>';
+  h+='</div>';
+
+  // === 10. RANKING PRIORITÀ ===
+  h+='<div class="card"><h2>Cosa conta per loro</h2><div class="sub">Classifica media delle priorit\u00e0 — posizione 1 = pi\u00f9 importante</div>';
+  const RK_LABELS=['Andare bene a scuola','Amicizie','Sport','Famiglia','Passione/hobby','Stare bene con me','Costruire il futuro','Social e chat','Videogiochi e streaming','Essere accettato/a'];
+  const rkAvgs=RK_LABELS.map((_,i)=>{let s=0,c=0;R.forEach(r=>{const v=+r['R_'+(i+1)];if(v){s+=v;c++;}});return{label:RK_LABELS[i],avg:c?s/c:99,idx:i};}).sort((a,b)=>a.avg-b.avg);
+  rkAvgs.forEach((item,pos)=>{
+    const isSchool=item.idx===0;const col=isSchool?'var(--g)':'var(--mu)';const bg=isSchool?'var(--gl)':'var(--bg)';
+    h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:4px;background:'+bg+';border-radius:8px'+(isSchool?';border:2px solid var(--g)':'')+'">';
+    h+='<div style="width:28px;height:28px;border-radius:50%;background:'+col+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">'+(pos+1)+'</div>';
+    h+='<div style="font-size:13px;font-weight:'+(isSchool?'700':'400')+';color:'+(isSchool?'var(--g)':'var(--tx)')+'">'+item.label+'</div>';
+    h+='<div style="margin-left:auto;font-size:11px;color:var(--mu)">media: '+item.avg.toFixed(1)+'\u00ba</div>';
+    h+='</div>';
+  });
+  const schoolPos=rkAvgs.findIndex(x=>x.idx===0)+1;
+  const socialPos=rkAvgs.findIndex(x=>x.idx===7)+1;const gamePos=rkAvgs.findIndex(x=>x.idx===8)+1;
+  if(schoolPos>=4)h+='<div class="ev ev-warn"><strong>La scuola \u00e8 al '+schoolPos+'\u00ba posto</strong> su 10 priorit\u00e0. Non \u00e8 colpa degli studenti: \u00e8 il contesto in cui crescono. La sfida \u00e8 rendere la scuola pi\u00f9 rilevante nella loro vita.</div>';
+  else if(schoolPos<=2)h+='<div class="ev ev-good"><strong>La scuola \u00e8 al '+schoolPos+'\u00ba posto:</strong> gli studenti la considerano importante. Un dato su cui costruire.</div>';
+  if(socialPos<schoolPos||gamePos<schoolPos)h+='<div class="ev ev-alert" style="margin-top:6px"><strong>Il digitale batte la scuola:</strong> '+(socialPos<schoolPos?'Social e chat ('+socialPos+'\u00ba)':'')+(socialPos<schoolPos&&gamePos<schoolPos?' e ':'')+(gamePos<schoolPos?'Videogiochi ('+gamePos+'\u00ba)':'')+' si posizionano davanti alla scuola ('+schoolPos+'\u00ba). Il mondo digitale commerciale occupa pi\u00f9 spazio nella loro vita di quanto ne occupi l\'apprendimento.</div>';
+  const acceptPos=rkAvgs.findIndex(x=>x.idx===9)+1;
+  if(acceptPos<=3)h+='<div class="ev ev-info" style="margin-top:6px"><strong>Pressione sociale:</strong> \u201cEssere accettato/a dagli altri\u201d \u00e8 al '+acceptPos+'\u00ba posto. La paura del giudizio e dell\'esclusione pesa pi\u00f9 dello studio.</div>';
+  h+='</div>';
+
+  // === 11. LA MATERIA CHE MANCA ===
+  const materie=R.map(r=>(r.MATERIA_NUOVA||'').trim()).filter(t=>t.length>1);
+  if(materie.length){
+    // Count frequencies
+    const freq={};materie.forEach(m=>{const k=m.toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g,'').trim();if(k)freq[k]=(freq[k]||0)+1;});
+    const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+    h+='<div class="card"><h2>La materia che manca</h2><div class="sub">'+materie.length+' studenti su '+N+' hanno proposto una materia nuova</div>';
+    sorted.forEach(([nome,count])=>{
+      const pctM=Math.round(count/materie.length*100);
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:12px;font-weight:600;width:140px;text-align:right;text-transform:capitalize">'+nome+'</div>';
+      h+='<div style="flex:1;height:18px;background:var(--bd);border-radius:4px;overflow:hidden"><div style="width:'+pctM+'%;height:100%;background:var(--pu);border-radius:4px"></div></div>';
+      h+='<div style="font-size:11px;font-weight:600;color:var(--pu);width:50px">'+count+'x ('+pctM+'%)</div></div>';
+    });
+    if(sorted.length&&sorted[0][1]>=3)h+='<div class="ev ev-info"><strong>Richiesta ricorrente:</strong> \u201c'+sorted[0][0]+'\u201d \u00e8 la materia pi\u00f9 richiesta con '+sorted[0][1]+' proposte. Un segnale da non ignorare.</div>';
+    h+='</div>';
+  }
+
+  // === 12. SPAZIO LIBERO — LE LORO PAROLE ===
+  const testi=R.map(r=>(r.TESTO||'').trim()).filter(t=>t.length>3);
+  if(testi.length){
+    h+='<div class="card full"><h2>Le loro parole</h2><div class="sub">'+testi.length+' studenti su '+N+' hanno scritto qualcosa nello spazio libero</div>';
+    testi.forEach(t=>{
+      h+='<div style="padding:10px 14px;margin-bottom:6px;background:var(--bg);border-radius:8px;border-left:3px solid var(--tl);font-size:12px;line-height:1.6;font-style:italic;color:var(--tx)">\u201c'+t+'\u201d</div>';
+    });
+    h+='</div>';
+  }
+
+  document.getElementById('content').innerHTML=h;
+
+  // === CHART.JS: RADAR ===
+  const profD=[];SDIM.forEach((l,si)=>{const sec='S'+(si+1),n=SNUMS[si];let s=0,c=0;for(let i=1;i<=n;i++){const a=avg(R,sec+'_'+i);if(a){s+=a;c++;}}profD.push(c?+(s/c).toFixed(2):0);});
+  new Chart(document.getElementById('chRadar'),{type:'radar',data:{labels:SDIM,datasets:[{label:'Media',data:profD,backgroundColor:'rgba(27,109,63,.12)',borderColor:'#1B6D3F',pointBackgroundColor:SCOL,pointRadius:5,borderWidth:2}]},options:{scales:{r:{min:0,max:3,ticks:{stepSize:1,font:{size:9}},pointLabels:{font:{size:10,weight:500}}}},plugins:{legend:{display:false}}}});
+
+}
+
+function hmCol(v){
+  if(v>=2.5)return '#1B6D3F';if(v>=2)return '#5C9E4A';if(v>=1.5)return '#C28B0A';return '#B8432E';
+}
+function hmColRev(v){// For difficulty: high=hard=red
+  if(v>=2.5)return '#B8432E';if(v>=2)return '#C28B0A';if(v>=1.5)return '#5C9E4A';return '#1B6D3F';
+}
+
+function genDossier(){
+  if(!ALL.length){alert('Nessun dato caricato.');return;}
+  const groups=[{label:'Tutte le classi',data:ALL},{label:'Classe 1\u00aa',data:ALL.filter(r=>r.classe==='1\u00aa')},{label:'Classe 2\u00aa',data:ALL.filter(r=>r.classe==='2\u00aa')},{label:'Classe 3\u00aa',data:ALL.filter(r=>r.classe==='3\u00aa')}];
+  const w=window.open('','_blank');
+  let doc=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Dossier TI ASCOLTO!</title>
+<style>
+@page{size:A4;margin:18mm 15mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',Helvetica,sans-serif;font-size:11px;color:#2C2C2C;line-height:1.5}
+.cover{page-break-after:always;display:flex;flex-direction:column;align-items:center;justify-content:center;height:90vh;text-align:center}
+.cover h1{font-size:32px;color:#1B6D3F;margin-bottom:6px}.cover .sub{font-size:14px;color:#7A7A72;margin-bottom:30px}
+.cover .info{font-size:11px;color:#7A7A72}
+.section{page-break-before:always}
+h2{font-size:16px;color:#1B6D3F;border-bottom:2px solid #1B6D3F;padding-bottom:4px;margin:18px 0 10px}
+h3{font-size:13px;color:#2E7CAF;margin:14px 0 6px}
+.q{font-weight:600;margin:8px 0 3px;font-size:11px}
+.opts{margin-left:8px;margin-bottom:4px}
+.opt{display:flex;align-items:center;gap:6px;margin:2px 0}
+.bar{height:10px;border-radius:3px;min-width:2px;display:inline-block}
+.pct{font-weight:600;width:32px;text-align:right;font-size:10px}
+.ev{padding:6px 10px;border-radius:4px;margin:6px 0;font-size:10px;line-height:1.5}
+.ev-w{background:#FEF3D6;border-left:3px solid #C28B0A}.ev-a{background:#FDECE8;border-left:3px solid #B8432E}
+.ev-g{background:#E8F5EE;border-left:3px solid #1B6D3F}.ev-i{background:#E8F2FA;border-left:3px solid #2E7CAF}
+.rank-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #E8E8E2}
+.rank-n{width:20px;height:20px;border-radius:50%;background:#7A7A72;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.rank-n.hl{background:#1B6D3F}
+.quote{padding:6px 10px;margin:3px 0;background:#F5F5F0;border-left:3px solid #1A7F6D;font-style:italic;font-size:10px}
+table.hm{border-collapse:collapse;width:100%;margin:6px 0}table.hm td,table.hm th{padding:3px 4px;text-align:center;font-size:8px;border:1px solid #E8E8E2}table.hm th{background:#F5F5F0;font-weight:600}
+.footer{text-align:center;font-size:8px;color:#7A7A72;margin-top:20px;padding-top:6px;border-top:1px solid #E8E8E2}
+.ap{display:flex;gap:4px;margin:2px 0;font-size:10px}.ap-n{width:90px;text-align:right}.ap-r{color:#B8432E;width:30px;text-align:right}.ap-g{color:#1B6D3F;width:30px}
+</style></head><body>`;
+
+  doc+=`<div class="cover"><h1>TI ASCOLTO!</h1><div class="sub">Profilo studente 2026 \u2014 Dossier analitico</div>
+<div class="info">Scuola Sacra Famiglia \u2014 Orzinuovi<br>Progetto Ferraboschi/Cerioli<br><br>
+${ALL.length} studenti | Generato il ${new Date().toLocaleDateString('it-IT')}<br><br>
+Questo dossier contiene i risultati del questionario di profilazione<br>
+somministrato agli studenti della scuola secondaria di I grado.<br><br>
+I dati sono organizzati in sezione sommativa (tutte le classi)<br>
+seguita dal dettaglio per ciascuna classe.</div></div>`;
+
+  groups.forEach((grp,gi)=>{
+    const R=grp.data,N=R.length;
+    if(!N)return;
+    doc+=`<div class="section"><h2>${grp.label} \u2014 ${N} studenti</h2>`;
+
+    function pl(key,question,opts){
+      const d=dist(R,key);const cols=['#1B6D3F','#C28B0A','#B8432E'];
+      let s='<div class="q">'+question+'</div><div class="opts">';
+      opts.forEach((o,i)=>{s+='<div class="opt"><div class="bar" style="width:'+Math.max(d[i]*1.5,2)+'px;background:'+cols[i]+'"></div><span style="color:'+cols[i]+'">'+o+'</span><span class="pct">'+d[i]+'%</span></div>';});
+      return s+'</div>';
+    }
+
+    // Ranking
+    const RK_L=['Andare bene a scuola','Amicizie','Sport','Famiglia','Passione/hobby','Stare bene con me','Costruire il futuro','Social e chat','Videogiochi e streaming','Essere accettato/a'];
+    const rkA=RK_L.map((_,i)=>{let s=0,c=0;R.forEach(r=>{const v=+r['R_'+(i+1)];if(v){s+=v;c++;}});return{l:RK_L[i],a:c?s/c:99,i:i};}).sort((a,b)=>a.a-b.a);
+    doc+='<h3>Classifica delle priorit\u00e0</h3>';
+    rkA.forEach((it,p)=>{doc+='<div class="rank-row"><div class="rank-n'+(it.i===0?' hl':'')+'">'+(p+1)+'</div><span'+(it.i===0?' style="font-weight:700;color:#1B6D3F"':'')+'>'+it.l+'</span><span style="margin-left:auto;font-size:9px;color:#7A7A72">'+it.a.toFixed(1)+'\u00ba</span></div>';});
+    const sPos=rkA.findIndex(x=>x.i===0)+1;
+    if(sPos>=4)doc+='<div class="ev ev-w"><strong>La scuola \u00e8 al '+sPos+'\u00ba posto</strong> su 10 priorit\u00e0.</div>';
+    const socialPos=rkA.findIndex(x=>x.i===7)+1;const gamePos=rkA.findIndex(x=>x.i===8)+1;
+    if(socialPos<sPos||gamePos<sPos)doc+='<div class="ev ev-a">Social e/o videogiochi si posizionano davanti alla scuola nella classifica delle priorit\u00e0.</div>';
+
+    // Aspettative
+    doc+='<h3>Cosa si aspettano dalla scuola</h3>';
+    doc+=pl('S6_1','Il ritmo delle lezioni',['Le lezioni uguali non lo disturbano','Vorrebbe pi\u00f9 variet\u00e0','Se non cambia ritmo, si spegne']);
+    doc+=pl('S6_2','Il coinvolgimento emotivo',['Impara bene anche senza','Aiuta ma non \u00e8 tutto','Se non coinvolge, non arriva nulla']);
+    doc+=pl('S6_3','Spazio per la creativit\u00e0',['Il programma va bene','Vorrebbe pi\u00f9 creativit\u00e0','Ha bisogno di creare']);
+    doc+=pl('S6_4','Collegamento col mondo reale',['Non gli serve','A volte vorrebbe capire','Se non collegato, non ha senso']);
+    doc+=pl('S6_5','L\'insegnante severo ma giusto',['Preferisce meno esigenza','Dipende','Chi pretende tira fuori il meglio']);
+    doc+=pl('S6_7','I compiti ripetitivi',['Lo aiutano','Alcuni s\u00ec altri no','Sono una perdita di tempo']);
+    doc+=pl('S6_8','Scegliere come lavorare',['Preferisce istruzioni','Guida + scelta','Decide lui il suo approccio']);
+
+    // Studio
+    doc+='<h3>Come studiano e cosa resta</h3>';
+    doc+=pl('S4_1','Video o testo scritto',['Preferisce testo','Dipende','Video molto di pi\u00f9']);
+    doc+=pl('S4_2','Schema o spiegazione orale',['Preferisce orale','Entrambi','Senza schema non arriva']);
+    doc+=pl('S4_7','Preparazione verifica',['Capire, non a memoria','Un po\' e un po\'','Ripete finch\u00e9 entra']);
+    doc+=pl('S4_9','Cosa resta dopo giorni',['Resta a lungo','Qualcosa s\u00ec','Dimenticato quasi tutto']);
+    doc+=pl('S4_10','Ricordare e passione',['Ricorda tutto','Meglio le cose che piacciono','Solo se appassiona']);
+    doc+=pl('S4_11','Perch\u00e9 studia',['Per capire davvero','Un po\' e un po\'','Solo per la verifica']);
+    doc+=pl('S4_12','Quando non capisce',['Cerca altro modo','A volte rilegge a volte alternative','Rilegge sperando']);
+    const mP=pct(R,'S4_9',3),vP=pct(R,'S4_11',3);
+    if(mP>30||vP>30)doc+='<div class="ev ev-a"><strong>'+mP+'%</strong> dimentica tutto, <strong>'+vP+'%</strong> studia solo per il voto.</div>';
+
+    // ICC
+    doc+='<h3>La consegna</h3>';
+    doc+=pl('ICC_A1','Rileggere la consegna',['Rilegge con attenzione','Legge veloce','Non rilegge']);
+    doc+=pl('ICC_A2','Prima di iniziare',['Tempo per capire','Occhiata rapida','Parte subito']);
+    doc+=pl('ICC_B1','Esempio nella consegna',['La scritta basta','A volte aiuta','Senza esempio non parte']);
+    doc+=pl('ICC_B2','Spiegazione a voce',['Capisce leggendo','Aiuta un po\'','Senza voce non capisce']);
+    doc+=pl('ICC_B3','Capire vs fare',['Fa quello che chiedono','Ogni tanto sbaglia','Fa spesso cosa diversa']);
+
+    // Heatmap
+    const HMW=[['No','Un po\'','Molto'],['No','Un po\'','S\u00ec'],['Facile','Cos\u00ec','Difficile'],['No','A volte','S\u00ec'],['Passivo','Dipende','Attivo'],['No','A volte','Sempre']];
+    doc+='<h3>Materie: mappa termica</h3><table class="hm"><tr><th></th>';
+    MDIM.forEach(d=>{doc+='<th>'+d+'</th>';});doc+='</tr>';
+    SUBS.forEach((sn,si)=>{
+      doc+='<tr><td style="text-align:left;font-weight:500">'+sn+'</td>';
+      MDIM.forEach((dn,di)=>{
+        const k='M_'+SUB_C[si]+'_'+['ARG','REA','DIF','SPG','ATV','CON'][di];
+        const a=avg(R,k);const c=di===2?hmColRev(a):hmCol(a);
+        const wi=a<1.5?0:a<2.5?1:2;
+        doc+='<td style="background:'+c+';color:#fff">'+HMW[di][wi]+'</td>';
+      });doc+='</tr>';
+    });doc+='</table>';
+
+    // Attivi/Passivi
+    doc+='<h3>Attivi vs Passivi per materia</h3>';
+    SUBS.forEach((sn,si)=>{const k='M_'+SUB_C[si]+'_ATV';doc+='<div class="ap"><div class="ap-n">'+sn+'</div><div class="ap-r">'+pct(R,k,1)+'% passivi</div><span style="color:#7A7A72"> | </span><div class="ap-g">'+pct(R,k,3)+'% attivi</div></div>';});
+
+    // Regole
+    doc+='<h3>Come vivono le regole</h3>';
+    doc+=pl('S9_1','Le regole della scuola',['Non hanno senso','Alcune s\u00ec','Giuste e servono']);
+    doc+=pl('S9_3','Quando riceve una nota',['Non cambia nulla','Dipende','Capisce cosa migliorare']);
+    doc+=pl('S9_7','Rispetto e comportamento',['Non dipende','Il rispetto aiuta','Se rispettato, do il massimo']);
+    doc+=pl('S9_9','Dialogo o punizione',['Punizioni servono','Dipende','Parlarne \u00e8 meglio']);
+    if(pct(R,'S9_7',3)>50)doc+='<div class="ev ev-i"><strong>'+pct(R,'S9_7',3)+'%</strong> dice: se trattato con rispetto, do il massimo.</div>';
+
+    // Cittadinanza digitale
+    doc+='<h3>Cittadinanza digitale</h3>';
+    doc+=pl('S10_1','Riconoscere i rischi',['Non insegnato','Qualcosa','So riconoscerli']);
+    doc+=pl('S10_4','Cambiato comportamento',['Come prima','Qualcosa','Molto cambiato']);
+    doc+=pl('S10_5','Simulazioni vs spiegazioni',['Tradizionali','Entrambi','Simulazioni molto di pi\u00f9']);
+    doc+=pl('S10_9','Coinvolgimento',['Non particolarmente','Abbastanza','Tra le pi\u00f9 coinvolgenti']);
+    if(pct(R,'S10_5',3)>40)doc+='<div class="ev ev-g"><strong>'+pct(R,'S10_5',3)+'%</strong> dice che le simulazioni insegnano pi\u00f9 delle spiegazioni tradizionali.</div>';
+
+    // Concentrazione
+    doc+='<h3>Concentrazione e disturbo</h3>';
+    doc+=pl('S3_1','Seguire senza distrarsi',['Concentrato','Si distrae ma recupera','Si distrae continuamente']);
+    doc+=pl('S3_2','Quando i compagni disturbano',['Si concentra lo stesso','Fastidio ma regge','Non capisce pi\u00f9 nulla']);
+    doc+=pl('S3_7','Il disturbo in classe',['Abbastanza ordine','A volte problema','Problema serio']);
+    if(pct(R,'S3_7',3)>40)doc+='<div class="ev ev-a"><strong>'+pct(R,'S3_7',3)+'%</strong> considera il disturbo un problema serio.</div>';
+
+    // La materia che manca
+    const matN=R.map(r=>(r.MATERIA_NUOVA||'').trim()).filter(t=>t.length>1);
+    if(matN.length){
+      const freq={};matN.forEach(m=>{const k=m.toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g,'').trim();if(k)freq[k]=(freq[k]||0)+1;});
+      const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+      doc+='<h3>La materia che manca ('+matN.length+' proposte)</h3>';
+      sorted.forEach(([nome,count])=>{doc+='<div style="margin:2px 0;font-size:10px"><strong style="text-transform:capitalize">'+nome+'</strong> \u2014 '+count+'x</div>';});
+    }
+
+    // Testi liberi solo nel sommativo
+    if(gi===0){
+      const testi=R.map(r=>(r.TESTO||'').trim()).filter(t=>t.length>3);
+      if(testi.length){
+        doc+='<h3>Le loro parole ('+testi.length+' testi)</h3>';
+        testi.forEach(t=>{doc+='<div class="quote">\u201c'+t+'\u201d</div>';});
+      }
+    }
+
+    doc+='<div class="footer">\u00a9 2026 Progetto Ferraboschi/Cerioli \u2014 Scuola Sacra Famiglia Orzinuovi \u2014 Tutti i diritti riservati</div></div>';
+  });
+
+  doc+='</body></html>';
+  w.document.write(doc);w.document.close();
+  setTimeout(()=>w.print(),600);
+}
+</script></body></html>
