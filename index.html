@@ -224,7 +224,7 @@
                 </div>
             </div>
             <div class="hero-counters">
-                <div class="hero-stat"><span class="stat-num" data-target="71">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
+                <div class="hero-stat"><span class="stat-num" data-target="72">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="12">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
                 <div class="hero-stat hero-update"><span class="stat-num">15</span><span class="stat-label">Aprile 2026<br>Ultimo aggiornamento</span></div>
@@ -429,7 +429,7 @@
 
         <!-- ══════ INFORMATICA & TECH ══════ -->
         <div class="card" data-theme="tech" data-category="tech">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-device-laptop"></i></div><div class="card-info"><div class="card-name">Informatica & Tech</div><span class="card-badge">10 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-device-laptop"></i></div><div class="card-info"><div class="card-name">Informatica & Tech</div><span class="card-badge">11 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://fakehunter.neocities.org/" target="_blank">
                     <span class="link-dot"></span>
@@ -479,6 +479,11 @@
                 <li><a href="https://genalfa.neocities.org/" target="_blank">
                     <span class="link-dot"></span>
                     <span class="link-text"><span class="link-name">Algoritmi e Reti Neurali</span><span class="link-desc">La Gen Alfa e il nuovo digitale</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://escapecity.vercel.app/" target="_blank">
+                    <span class="link-dot"></span>
+                    <span class="link-text"><span class="link-name">Guarda Due Volte</span><span class="link-desc">Laboratorio di lettura lenta: un'immagine, otto zone nascoste, una frase da scoprire</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
@@ -673,8 +678,8 @@
             var W, H;
 
             function resize() {
-                canvas.width = canvas.parentElement.offsetWidth;
-                canvas.height = canvas.parentElement.offsetHeight;
+                canvas.width = canvas.parentElement.offsetWidth || 1;
+                canvas.height = canvas.parentElement.offsetHeight || 1;
                 W = canvas.width; H = canvas.height;
             }
             resize();
@@ -803,7 +808,7 @@
             /* project [lon,lat] to canvas pixels — Italy right side */
             var IT_CX, IT_CY, SC;
             function calcProjection() {
-                SC = Math.min(W * 0.042, H * 0.075);
+                SC = Math.max(1, Math.min(W * 0.042, H * 0.075));
                 IT_CX = W * 0.80;
                 IT_CY = H * 0.5;
             }
@@ -904,6 +909,10 @@
                 IT_CY = savedCY + (savedCY - ozScreenY) * zoomT;
 
                 var oz = proj(OZ_LON, OZ_LAT);
+                if (!isFinite(oz.x) || !isFinite(oz.y) || !isFinite(SC) || SC <= 0) {
+                    SC = savedSC; IT_CX = savedCX; IT_CY = savedCY;
+                    requestAnimationFrame(draw); return;
+                }
 
                 /* glow behind Italy */
                 var grd = ctx.createRadialGradient(oz.x, oz.y, 10, oz.x, oz.y, SC * 18);
