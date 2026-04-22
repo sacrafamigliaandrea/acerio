@@ -292,9 +292,15 @@
     "status": "Registro art. 30"
   },
   "E": {
-    "name": "Raccolta occasionale",
+    "name": "Raccolta dati studenti",
     "risk": "BASSO-MEDIO",
     "color": "#4A5160",
+    "status": "DPIA semplificata"
+  },
+  "F": {
+    "name": "Strumenti professionali docenti",
+    "risk": "BASSO",
+    "color": "#2C5F8D",
     "status": "DPIA semplificata"
   }
 }
@@ -322,6 +328,7 @@
       .dpia-C{background:#1E4A8A}
       .dpia-D{background:#6B7280}
       .dpia-E{background:#4A5160}
+      .dpia-F{background:#2C5F8D}
 
       .dpia-tooltip{
         position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-4px);
@@ -425,11 +432,11 @@
     const note = document.createElement('aside');
     note.id = 'dpia-footer-note';
     note.className = 'dpia-footer-note';
-    const counts = {A:0,B:0,C:0,D:0,E:0};
+    const counts = {A:0,B:0,C:0,D:0,E:0,F:0};
     Object.values(DPIA_DATA.apps).forEach(a => counts[a.c]++);
     const total = Object.keys(DPIA_DATA.apps).length;
 
-    const legendItems = ['A','B','C','D','E'].filter(c => counts[c] > 0).map(c => {
+    const legendItems = ['A','B','C','D','E','F'].filter(c => counts[c] > 0).map(c => {
       const info = DPIA_DATA.clusters[c];
       return '<span><span class="dpia-badge dpia-' + c + '">' + c + '</span> ' + info.name + ' (' + counts[c] + ')</span>';
     }).join('');
