@@ -10,11 +10,11 @@
     updated: '2026-04-22',
     apps: {
   "sondaggiostudenti.vercel.app": {
-    "c": "A",
+    "c": "E",
     "n": "TI ASCOLTO!"
   },
   "calibro.neocities.org": {
-    "c": "A",
+    "c": "F",
     "n": "Calibro"
   },
   "genitori.neocities.org": {
@@ -41,6 +41,10 @@
     "c": "D",
     "n": "Social sotto la Lente"
   },
+  "comportamentismo.neocities.org": {
+    "c": "E",
+    "n": "Sei un Piccione?"
+  },
   "sicofante.vercel.app": {
     "c": "D",
     "n": "Il Sicofante Digitale"
@@ -66,7 +70,7 @@
     "n": "Stop Cyberbullismo"
   },
   "polizia-postale.vercel.app": {
-    "c": "B",
+    "c": "D",
     "n": "Commissariato Digitale"
   },
   "mattoncini.neocities.org": {
@@ -94,7 +98,7 @@
     "n": "Testo Argomentativo"
   },
   "argomentor.vercel.app": {
-    "c": "B",
+    "c": "D",
     "n": "ArgoMentor"
   },
   "ascolto.neocities.org": {
@@ -114,7 +118,7 @@
     "n": "Debate in Classe"
   },
   "laboscrittura.vercel.app": {
-    "c": "B",
+    "c": "E",
     "n": "BottegaScrivi"
   },
   "fakehunter.neocities.org": {
