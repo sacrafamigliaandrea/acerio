@@ -91,6 +91,18 @@
             font-size: .8rem; font-weight: 700; color: #ef4444;
             min-height: 1.2rem; margin-top: .3rem;
         }
+        .auth-hint {
+            font-size: .72rem; font-weight: 600; color: var(--text-light);
+            margin: -.4rem 0 .8rem; line-height: 1.4;
+        }
+        .auth-reset {
+            display: inline-flex; align-items: center; gap: .3rem;
+            margin-top: .8rem; padding: .4rem .8rem; border: none;
+            background: none; color: var(--text-light); font-family: 'Nunito';
+            font-size: .72rem; font-weight: 700; cursor: pointer;
+            transition: color .25s ease;
+        }
+        .auth-reset:hover { color: #ef4444; }
 
         /* ═══ CONTENT (hidden until login) ═══ */
         .content-wrap {
@@ -214,13 +226,20 @@
     <div class="login-wrap" id="loginWrap">
         <div class="login-card">
             <div class="login-lock"><i class="ti ti-lock-access" style="font-size:1.8rem;color:var(--accent)"></i></div>
-            <h2>Accesso Riservato</h2>
-            <p>Inserisci la password fornita dall'Animatore Digitale</p>
+            <h2 id="authTitle">Accesso Riservato</h2>
+            <p id="authLabel">Inserisci la password fornita dall'Animatore Digitale</p>
             <div class="login-field">
                 <input type="password" id="pwdInput" placeholder="Password..." autocomplete="off">
+            </div>
+            <div class="login-field" id="authConfirmWrap" style="display:none">
+                <input type="password" id="pwdConfirm" placeholder="Conferma password..." autocomplete="off">
+            </div>
+            <p id="authHint" class="auth-hint" style="display:none">Minimo 6 caratteri. Questa password proteggerà l'area riservata su questo browser.</p>
+            <div class="login-field">
                 <button id="pwdBtn">Accedi</button>
             </div>
             <div class="login-error" id="pwdError"></div>
+            <button id="authReset" class="auth-reset" style="display:none" title="Cancella la password salvata e riconfigura l'accesso"><i class="ti ti-refresh"></i> Reset accesso</button>
         </div>
     </div>
 
@@ -373,7 +392,7 @@
     </footer>
 
     <script>
-        var HASH = '09c003a4de02c6b43775857066acf54bd24630f9d55679bae66b2c1100cddaff';
+        var STORAGE_KEY = 'sacrafamiglia-riservata-hash';
 
         async function sha256(str) {
             var buf = new TextEncoder().encode(str);
@@ -381,24 +400,82 @@
             return Array.from(new Uint8Array(hash)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
         }
 
-        async function tryLogin() {
-            var pwd = document.getElementById('pwdInput').value;
-            if (!pwd) return;
-            var h = await sha256(pwd);
-            if (h === HASH) {
-                document.getElementById('loginWrap').style.display = 'none';
-                document.getElementById('contentWrap').classList.add('visible');
+        function getStoredHash() {
+            try { return localStorage.getItem(STORAGE_KEY); } catch(e) { return null; }
+        }
+
+        function initAuth() {
+            var stored = getStoredHash();
+            if (!stored) {
+                document.getElementById('authTitle').textContent = 'Configurazione iniziale';
+                document.getElementById('authLabel').textContent = 'Imposta la password per l\'area riservata';
+                document.getElementById('authConfirmWrap').style.display = 'flex';
+                document.getElementById('pwdBtn').textContent = 'Imposta password e accedi';
+                document.getElementById('authHint').style.display = 'block';
+                document.getElementById('authReset').style.display = 'none';
             } else {
-                document.getElementById('pwdError').textContent = 'Password non corretta. Riprova.';
-                document.getElementById('pwdInput').value = '';
-                document.getElementById('pwdInput').focus();
+                document.getElementById('authTitle').textContent = 'Accesso Riservato';
+                document.getElementById('authLabel').textContent = 'Inserisci la password';
+                document.getElementById('authConfirmWrap').style.display = 'none';
+                document.getElementById('pwdBtn').textContent = 'Accedi';
+                document.getElementById('authHint').style.display = 'none';
+                document.getElementById('authReset').style.display = 'inline-flex';
+            }
+            setTimeout(function() { document.getElementById('pwdInput').focus(); }, 100);
+        }
+
+        function enterApp() {
+            document.getElementById('loginWrap').style.display = 'none';
+            document.getElementById('contentWrap').classList.add('visible');
+        }
+
+        async function doAuth() {
+            var pwd = document.getElementById('pwdInput').value;
+            var err = document.getElementById('pwdError');
+            err.textContent = '';
+
+            if (!pwd) { err.textContent = 'Inserisci una password'; return; }
+
+            var stored = getStoredHash();
+
+            if (!stored) {
+                var confirm = document.getElementById('pwdConfirm').value;
+                if (pwd.length < 6) {
+                    err.textContent = 'La password deve essere di almeno 6 caratteri';
+                    return;
+                }
+                if (pwd !== confirm) {
+                    err.textContent = 'Le due password non coincidono';
+                    return;
+                }
+                var hash = await sha256(pwd);
+                try { localStorage.setItem(STORAGE_KEY, hash); } catch(e) {}
+                enterApp();
+            } else {
+                var hash = await sha256(pwd);
+                if (hash === stored) {
+                    enterApp();
+                } else {
+                    err.textContent = 'Password non corretta. Riprova.';
+                    document.getElementById('pwdInput').value = '';
+                    document.getElementById('pwdInput').focus();
+                }
             }
         }
 
-        document.getElementById('pwdBtn').addEventListener('click', tryLogin);
-        document.getElementById('pwdInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') tryLogin();
-        });
+        function resetAuth() {
+            if (!confirm('Vuoi resettare la password? Dovrai impostarne una nuova al prossimo accesso.')) return;
+            try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+            document.getElementById('pwdInput').value = '';
+            document.getElementById('pwdError').textContent = '';
+            initAuth();
+        }
+
+        document.getElementById('pwdBtn').addEventListener('click', doAuth);
+        document.getElementById('pwdInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') doAuth(); });
+        document.getElementById('pwdConfirm').addEventListener('keydown', function(e) { if (e.key === 'Enter') doAuth(); });
+        document.getElementById('authReset').addEventListener('click', resetAuth);
+        initAuth();
     </script>
 <script>
 (function(){
