@@ -25,6 +25,7 @@
             --c-scienze: #6b7c3e; --c-scienze-bg: #f4f6ee; --c-scienze-light: #e5e9d8;
             --c-scuola: #3d6b5c; --c-scuola-bg: #eef4f2; --c-scuola-light: #d8e8e3;
             --c-sport: #7a8a4a; --c-sport-bg: #f5f6ef; --c-sport-light: #e8eadb;
+            --c-biblioteca: #8b6914; --c-biblioteca-bg: #fef9ee; --c-biblioteca-light: #fdf0d5;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
@@ -176,6 +177,7 @@
         .card[data-theme="scienze"] { --card-color: var(--c-scienze); --card-color-bg: var(--c-scienze-bg); --card-color-light: var(--c-scienze-light); }
         .card[data-theme="scuola"] { --card-color: var(--c-scuola); --card-color-bg: var(--c-scuola-bg); --card-color-light: var(--c-scuola-light); }
         .card[data-theme="sport"] { --card-color: var(--c-sport); --card-color-bg: var(--c-sport-bg); --card-color-light: var(--c-sport-light); }
+        .card[data-theme="biblioteca"] { --card-color: var(--c-biblioteca); --card-color-bg: var(--c-biblioteca-bg); --card-color-light: var(--c-biblioteca-light); }
 
         /* ═══ NO RESULTS ═══ */
         @keyframes wobble { 0%,100% { transform:rotate(0); } 25% { transform:rotate(-8deg); } 75% { transform:rotate(8deg); } }
@@ -224,7 +226,7 @@
                 </div>
             </div>
             <div class="hero-counters">
-                <div class="hero-stat"><span class="stat-num" data-target="75">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
+                <div class="hero-stat"><span class="stat-num" data-target="76">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="13">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
                 <div class="hero-stat hero-update"><span class="stat-num">15</span><span class="stat-label">Aprile 2026<br>Ultimo aggiornamento</span></div>
@@ -422,6 +424,18 @@
                 <li><a href="https://tracciatema.neocities.org/" target="_blank">
                     <span class="link-dot"></span>
                     <span class="link-text"><span class="link-name">ScriviMeglio</span><span class="link-desc">Costruisci la scaletta del tuo testo e scarica il PDF</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+            </ul>
+        </div>
+
+        <!-- ══════ BIBLIOTECA DIGITALE ══════ -->
+        <div class="card" data-theme="biblioteca" data-category="biblioteca">
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-headphones"></i></div><div class="card-info"><div class="card-name">Biblioteca Digitale</div><span class="card-badge">1 risorsa</span></div></div>
+            <ul class="card-list">
+                <li><a href="https://harrypotter-1.vercel.app/" target="_blank">
+                    <span class="link-dot"></span>
+                    <span class="link-text"><span class="link-name">Harry Potter e la Pietra Filosofale</span><span class="link-desc">Audiolettura interattiva: segui il narratore parola per parola, con segnalibro</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
