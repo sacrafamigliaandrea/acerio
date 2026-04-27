@@ -155,14 +155,15 @@
         .card-pdf-btn:hover { background: #5d6e3b; color: #fff; transform: translateY(-1px); }
 
         /* ═══ CARD LIST — con descrizioni ═══ */
-        .card-list { list-style: none; padding: .3rem .75rem 1rem; }
-        .card-list li { border-radius: var(--radius-xs); transition: all .2s ease; }
+        .card-list { list-style: none; padding: .3rem .75rem 1rem; counter-reset: app-num; }
+        .card-list li { border-radius: var(--radius-xs); transition: all .2s ease; counter-increment: app-num; }
         .card-list li + li { margin-top: 1px; }
         .card-list li:hover { background: var(--card-color-bg); }
         .card-list a { display: flex; align-items: center; gap: .65rem; padding: .6rem .7rem; text-decoration: none; color: var(--text-medium); transition: all .25s ease; border-radius: var(--radius-xs); }
         .card-list a:hover { color: var(--card-color); }
-        .link-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--card-color); opacity: .3; transition: all .3s cubic-bezier(.175,.885,.32,1.275); flex-shrink: 0; align-self: flex-start; margin-top: .45rem; }
-        .card-list a:hover .link-dot { opacity: 1; transform: scale(1.5); }
+        .link-num { min-width: 22px; height: 22px; border-radius: 7px; background: var(--card-color); opacity: .2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-start; margin-top: .25rem; font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; color: #fff; transition: all .3s cubic-bezier(.175,.885,.32,1.275); }
+        .link-num::before { content: counter(app-num); }
+        .card-list a:hover .link-num { opacity: 1; transform: scale(1.1); }
         .link-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
         .link-name { font-size: .88rem; font-weight: 700; line-height: 1.25; color: var(--text-dark); transition: color .25s ease; }
         .card-list a:hover .link-name { color: var(--card-color); }
@@ -226,7 +227,7 @@
                 </div>
             </div>
             <div class="hero-counters">
-                <div class="hero-stat"><span class="stat-num" data-target="80">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
+                <div class="hero-stat"><span class="stat-num" data-target="82">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="13">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
                 <div class="hero-stat hero-update"><span class="stat-num">15</span><span class="stat-label">Aprile 2026<br>Ultimo aggiornamento</span></div>
@@ -264,82 +265,82 @@
             <a href="percorso_cittadinanza_digitale.pdf" target="_blank" class="card-pdf-btn"><i class="ti ti-file-text"></i> Scopri il Progetto — PDF</a>
             <ul class="card-list">
                 <li><a href="https://guglielmoildentone.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">L'Occhio Critico</span><span class="link-desc">Essere o apparire? Attività su giudizio, aspetto e pensiero critico</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://manipolazione.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Riconosci la Manipolazione</span><span class="link-desc">Come i media e il web influenzano opinioni e comportamenti</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://socialschool.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Social sotto la Lente</span><span class="link-desc">Instagram e TikTok: cosa succede davvero dietro lo schermo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://comportamentismo.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Sei un Piccione?</span><span class="link-desc">Come i social ci trasformano in piccioni da laboratorio — e come riconoscerlo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://aiconsumi.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Quanto consuma l'AI?</span><span class="link-desc">L'impatto ambientale delle tue azioni digitali: ogni prompt, ogni video, ogni ricerca ha un costo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sicofante.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Sicofante Digitale</span><span class="link-desc">Quando l'AI e i social ti dicono solo quello che vuoi sentire: riconosci la sycophancy</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://famigliaaccorti.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Famiglia Accorti</span><span class="link-desc">Guida interattiva alla sicurezza digitale in famiglia</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://socialguide.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Navigare Sicuri</span><span class="link-desc">Attività e risorse per il Safer Internet Day</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://pizzeriagoogle.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Pizzeria Google</span><span class="link-desc">Scopri come i tuoi dati diventano il "menù" di Internet</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://securepassword.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Generatore di Password</span><span class="link-desc">Crea password sicure e scopri come proteggere i tuoi account</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://cyberbullismo.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Stop Cyberbullismo</span><span class="link-desc">Riconoscere, prevenire e reagire al bullismo online</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://missionedigitale.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Indagine Digitale 2026</span><span class="link-desc">Otto missioni investigative per esplorare il mondo digitale</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://cyberescape.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">CyberEscape</span><span class="link-desc">Simulatore attacchi informatici Scuola-Casa</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://truffa-ballerina.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Voto che Ruba</span><span class="link-desc">Smonta una truffa WhatsApp: 50 messaggi da analizzare e smascherare</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://attacchinformatici.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Cyber Sentinel</span><span class="link-desc">Monitor minacce globali e academy di cybersecurity con profilo metacognitivo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://polizia-postale.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Commissariato Digitale</span><span class="link-desc">Simulazione Polizia Postale: guida ai pericoli digitali</span></span>
                     <span class="link-go">→</span>
                 </a></li>
@@ -352,77 +353,77 @@
             <a href="percorso_scrittura.pdf" target="_blank" class="card-pdf-btn"><i class="ti ti-file-text"></i> Scopri il Progetto — PDF</a>
             <ul class="card-list">
                 <li><a href="https://mattoncini.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">I Mattoncini del Testo</span><span class="link-desc">Costruire frasi e paragrafi un pezzo alla volta</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://errore.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Impara dall'Errore</span><span class="link-desc">Riconoscere e correggere gli errori per scrivere meglio</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://fattopinione.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Fatto o Opinione?</span><span class="link-desc">Distingui fatti verificabili da opinioni personali in un gioco a livelli</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://scrivere.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Le 3 Forme del Testo</span><span class="link-desc">Descrivere, narrare e argomentare: strutture a confronto</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://laboratorioscrittura2.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Testo Descrittivo</span><span class="link-desc">Le cuffiette: esercizio guidato di descrizione oggettiva e soggettiva</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://immagine.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Scrivere con le Immagini</span><span class="link-desc">Dalla lettura visiva alla produzione testuale</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://insegnareapensare.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">La Bottega dell'Argomentazione</span><span class="link-desc">7 mosse strategiche per costruire ragionamenti solidi — classi 4ª e 5ª</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://laboratorioscrittura.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Testo Argomentativo</span><span class="link-desc">Lo sharenting come tema per imparare ad argomentare</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://argomentor.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">ArgoMentor</span><span class="link-desc">Impara a sostenere le tue idee: guida al testo argomentativo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://ascolto.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Scrivere dall'Ascolto</span><span class="link-desc">Stimoli sonori come punto di partenza per la scrittura creativa</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://mentalcoach.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Mental Coaching</span><span class="link-desc">Tecniche di scrittura per allenare il pensiero</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://videoshorts.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name"><i class="ti ti-movie"></i> Video Shorts</span><span class="link-desc">Laboratorio di editing e narrazione video breve</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://schooldebate.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Debate in Classe</span><span class="link-desc">Struttura e regole per il dibattito argomentativo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://laboscrittura.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Bottega</span><span class="link-desc">Scrivi come un artigiano: impara dai modelli, in silenzio e con concentrazione</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://tracciatema.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">ScriviMeglio</span><span class="link-desc">Costruisci la scaletta del tuo testo e scarica il PDF</span></span>
                     <span class="link-go">→</span>
                 </a></li>
@@ -431,31 +432,41 @@
 
         <!-- ══════ BIBLIOTECA DIGITALE ══════ -->
         <div class="card" data-theme="biblioteca" data-category="biblioteca">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-headphones"></i></div><div class="card-info"><div class="card-name">Biblioteca Digitale</div><span class="card-badge">5 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-headphones"></i></div><div class="card-info"><div class="card-name">Biblioteca Digitale</div><span class="card-badge">7 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://harrypotter-1.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Harry Potter e la Pietra Filosofale</span><span class="link-desc">Audiolettura interattiva: segui il narratore parola per parola, con segnalibro</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://harrypotter-2.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Harry Potter e la Camera dei Segreti</span><span class="link-desc">Audiolettura interattiva: il secondo capitolo della saga, parola per parola</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://ventimila-leghe.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Ventimila Leghe sotto i Mari</span><span class="link-desc">Audiolettura interattiva: il viaggio del capitano Nemo, parola per parola</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://pennutispennati.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name"><i class="ti ti-movie"></i> Pennuti Spennati</span><span class="link-desc">Cortometraggio Pixar con attività di osservazione e metacognizione</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://agnellorimbalzello.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name"><i class="ti ti-movie"></i> L'Agnello Rimbalzello</span><span class="link-desc">Cortometraggio Pixar: il video si ferma 5 volte, tu rispondi e costruisci il tuo diario</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://gerisgame.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name"><i class="ti ti-movie"></i> La Mossa di Geri</span><span class="link-desc">Cortometraggio Pixar senza parole: Geri gioca a scacchi, tu osservi e rispondi</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://parzialmentenuvoloso.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name"><i class="ti ti-movie"></i> Le Nuvole di Gus</span><span class="link-desc">Cortometraggio Pixar senza parole: le nuvole creano i cuccioli, tu esplori il significato</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
@@ -466,57 +477,57 @@
             <div class="card-head"><div class="card-emoji"><i class="ti ti-device-laptop"></i></div><div class="card-info"><div class="card-name">Informatica & Tech</div><span class="card-badge">11 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://fakehunter.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Fake Hunter</span><span class="link-desc">Caccia alle bufale: impara a smascherare le fake news</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://truffe.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Truffe & Phishing</span><span class="link-desc">Scam, phishing e inganni digitali: come difendersi in rete</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://stampa3d.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name"><i class="ti ti-3d-cube-sphere"></i> Stampa 3D</span><span class="link-desc">Dalla modellazione alla stampa: introduzione alla prototipazione</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://keyboardmac.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Scorciatoie Mac</span><span class="link-desc">I comandi rapidi da tastiera per lavorare più velocemente</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://glossarioinfo.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Glossario Digitale</span><span class="link-desc">Le parole chiave del mondo informatico dalla A alla Z</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://typegame.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Sfida di Videoscrittura</span><span class="link-desc">Gioco interattivo per imparare a scrivere al computer</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://tastiera.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Allenamento Tastiera</span><span class="link-desc">Esercizi pratici per digitare con velocità e precisione</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://pesodigitale.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">La Scala Digitale</span><span class="link-desc">KB, MB, GB: misura i file, gestisci lo spazio e simula la velocità di rete</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://barscuola.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Bar della Scuola</span><span class="link-desc">Compito autentico — matematica: gestisci la cassa e calcola il resto</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://genalfa.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Algoritmi e Reti Neurali</span><span class="link-desc">La Gen Alfa e il nuovo digitale</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://escapecity.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Guarda Due Volte</span><span class="link-desc">Laboratorio di lettura lenta: un'immagine, otto zone nascoste, una frase da scoprire</span></span>
                     <span class="link-go">→</span>
                 </a></li>
@@ -528,82 +539,82 @@
             <div class="card-head"><div class="card-emoji"><i class="ti ti-search"></i></div><div class="card-info"><div class="card-name">Approfondimenti e Ricerche</div><span class="card-badge">16 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://geografiamaps.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Gite Virtuali</span><span class="link-desc">Esplora il mondo con Google Maps senza uscire da scuola</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sacrafamiglialabinfo.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Ciro il Dinosauro</span><span class="link-desc">Alla scoperta del primo cucciolo di dinosauro italiano</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://dinosauri.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Mondo dei Dinosauri</span><span class="link-desc">Laboratorio Biomeccanico Virtuale</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://apparati.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Corpo Umano</span><span class="link-desc">Viaggio interattivo tra gli apparati e i sistemi del corpo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://pontremoli.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Pontremoli — Tesina d'Esame</span><span class="link-desc">Percorso interdisciplinare per la tesina conclusiva del primo ciclo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://esame.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name"><i class="ti ti-school"></i> Esame di Stato</span><span class="link-desc">Guida e risorse per prepararsi all'esame di terza media</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://invalsi.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Missione INVALSI 2026</span><span class="link-desc">Tutto per prepararsi alle prove nazionali di aprile</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://errore.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Trasformiamo l'Errore in Opportunità</span><span class="link-desc">Percorso interdisciplinare sull'errore come strumento di crescita</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://debaterrore.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Debate sull'Errore</span><span class="link-desc">Dibattito strutturato: l'errore è davvero un'opportunità?</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://notebooklmstyle.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Infografiche con Notebook LM</span><span class="link-desc">Come scegliere gli stili per le tue infografiche</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://teamdebate.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Arena del Pensiero</span><span class="link-desc">Il debate di squadra in classe</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://labinfo.my.canva.site/canto3" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Canto III — Divina Commedia</span><span class="link-desc">Approfondimento multimediale sul terzo canto</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://garagevalley.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">I Geni della Tecnologia</span><span class="link-desc">Come le loro idee hanno rivoluzionato il mondo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://labscienze.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Laboratorio Scientifico</span><span class="link-desc">Esplora, sperimenta, scopri — dalla 3ª Primaria alla 3ª Secondaria</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sintesiproteica.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Sintesi Proteica</span><span class="link-desc">Dal DNA alle proteine: il viaggio della sintesi proteica</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://homoavdventure.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Viaggio dell'Uomo</span><span class="link-desc">Dalle origini alla storia: il percorso dell'umanità</span></span>
                     <span class="link-go">→</span>
                 </a></li>
@@ -615,37 +626,37 @@
             <div class="card-head"><div class="card-emoji"><i class="ti ti-heart-handshake"></i></div><div class="card-info"><div class="card-name">Sacra Famiglia</div><span class="card-badge">7 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://100anni.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">100 Anni di Storia in Musica</span><span class="link-desc">Un secolo di vita e missione della Sacra Famiglia, in musica</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sfida.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Il Gioco delle Case</span><span class="link-desc">Il Gioco delle Case della Sacra Famiglia</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://autovalutazione.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Autovalutazione Lezione</span><span class="link-desc">Strumento per riflettere sulla qualità della propria lezione</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sacrafamiglia.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Le Mascotte delle Case</span><span class="link-desc">Le mascotte delle Case della Sacra Famiglia</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://santapaola.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">S. Paola Elisabetta</span><span class="link-desc">Festa e ricorrenza della fondatrice</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://quizzonespaola.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Quizzone S. Paola</span><span class="link-desc">Quanto conosci Santa Paola? Mettiti alla prova!</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://randomecase.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Consegna alle Case</span><span class="link-desc">Assegnazione casuale delle consegne per i lavori di gruppo in classe, con timer facoltativo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
@@ -657,52 +668,52 @@
             <div class="card-head"><div class="card-emoji"><i class="ti ti-trophy"></i></div><div class="card-info"><div class="card-name">Sport e Giochi</div><span class="card-badge">10 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://studiomusicale.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Studio Musicale</span><span class="link-desc">Esplora strumenti, note e ritmi in modo interattivo</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://giamaica.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Cool Runnings</span><span class="link-desc">La storia incredibile della squadra di bob giamaicana</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://labinfo.my.canva.site/c17sxqtedy2jyaw7" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Milano Cortina</span><span class="link-desc">Le Olimpiadi Tecnologiche</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://olimpictech.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Tech & Olimpiadi</span><span class="link-desc">Come la tecnologia ha cambiato lo sport olimpico</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://milanocortina.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Milano-Cortina 2026</span><span class="link-desc">I geni italiani protagonisti delle Olimpiadi invernali</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sacrafamigliatornei.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Gestione Tornei</span><span class="link-desc">Organizza e gestisci i tornei sportivi scolastici</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://sacrafamigliagames.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Word Games</span><span class="link-desc">Giochi di parole per divertirsi e arricchire il lessico</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://profemon.neocities.org/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Profemon</span><span class="link-desc">Il gioco di carte cooperativo della scuola: schierate i prof e superate le sfide!</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://calcio-one.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Storia del Calcio</span><span class="link-desc">Un viaggio nel calcio dal 2000 al 2025</span></span>
                     <span class="link-go">→</span>
                 </a></li>
                 <li><a href="https://masterchef-iota.vercel.app/" target="_blank">
-                    <span class="link-dot"></span>
+                    <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Master Chef</span><span class="link-desc">Ricette italiane: un viaggio tra sapori e tradizioni</span></span>
                     <span class="link-go">→</span>
                 </a></li>
