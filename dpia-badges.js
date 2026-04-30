@@ -1,483 +1,618 @@
-/* ======================================================================
-   DPIA Badges — Integrazione portale Scuola Sacra Famiglia
-   Generato automaticamente da DPIA Studio il 2026-04-22
-   Aggiunge bollini di conformità alle applicazioni classificate.
-   ====================================================================== */
-(function(){
-  'use strict';
+/* =============================================================================
+ * dpia-badges.js
+ * Bollini di conformità GDPR/AI Act per il portale Sacra Famiglia
+ * 
+ * Generato automaticamente da DPIA Studio il 2026-04-30
+ * 79 applicazioni classificate
+ * 
+ * Ogni link nel portale che corrisponde a un'app classificata riceve un piccolo
+ * badge colorato accanto al nome, indicante il cluster di rischio.
+ * 
+ * Cluster:
+ *   A = Profilazione studenti (ALTO)
+ *   B = Monitoraggio comportamentale (ALTO-MEDIO)
+ *   C = IA generativa (MEDIO)
+ *   D = Senza dati personali (MINIMO)
+ *   E = Raccolta dati studenti (BASSO-MEDIO)
+ *   F = Strumenti professionali docenti (BASSO)
+ * ============================================================================= */
 
-  const DPIA_DATA = {
-    updated: '2026-04-22',
-    apps: {
-  "sondaggiostudenti.vercel.app": {
-    "c": "E",
-    "n": "TI ASCOLTO!"
-  },
-  "calibro.neocities.org": {
-    "c": "F",
-    "n": "Calibro"
-  },
-  "genitori.neocities.org": {
-    "c": "D",
-    "n": "Guida per Genitori"
-  },
-  "scuolaipad.neocities.org": {
-    "c": "D",
-    "n": "Scuola Digitale"
-  },
-  "chatbotai.neocities.org": {
-    "c": "D",
-    "n": "Didattica e AI"
-  },
-  "ineai.neocities.org": {
-    "c": "D",
-    "n": "IN + IA"
-  },
-  "manipolazione.neocities.org": {
-    "c": "D",
-    "n": "Riconosci la Manipolazione"
-  },
-  "socialschool.neocities.org": {
-    "c": "D",
-    "n": "Social sotto la Lente"
-  },
-  "comportamentismo.neocities.org": {
-    "c": "E",
-    "n": "Sei un Piccione?"
-  },
-  "sicofante.vercel.app": {
-    "c": "D",
-    "n": "Il Sicofante Digitale"
-  },
-  "famigliaaccorti.neocities.org": {
-    "c": "D",
-    "n": "Famiglia Accorti"
-  },
-  "socialguide.neocities.org": {
-    "c": "D",
-    "n": "Navigare Sicuri"
-  },
-  "pizzeriagoogle.neocities.org": {
-    "c": "D",
-    "n": "Pizzeria Google"
-  },
-  "securepassword.neocities.org": {
-    "c": "D",
-    "n": "Generatore di Password"
-  },
-  "cyberbullismo.neocities.org": {
-    "c": "D",
-    "n": "Stop Cyberbullismo"
-  },
-  "polizia-postale.vercel.app": {
-    "c": "D",
-    "n": "Commissariato Digitale"
-  },
-  "mattoncini.neocities.org": {
-    "c": "D",
-    "n": "I Mattoncini del Testo"
-  },
-  "errore.neocities.org": {
-    "c": "D",
-    "n": "Trasformiamo l'Errore in Opportunita"
-  },
-  "scrivere.neocities.org": {
-    "c": "D",
-    "n": "Le 3 Forme del Testo"
-  },
-  "laboratorioscrittura2.neocities.org": {
-    "c": "D",
-    "n": "Testo Descrittivo"
-  },
-  "immagine.neocities.org": {
-    "c": "D",
-    "n": "Scrivere con le Immagini"
-  },
-  "laboratorioscrittura.neocities.org": {
-    "c": "D",
-    "n": "Testo Argomentativo"
-  },
-  "argomentor.vercel.app": {
-    "c": "D",
-    "n": "ArgoMentor"
-  },
-  "ascolto.neocities.org": {
-    "c": "D",
-    "n": "Scrivere dall'Ascolto"
-  },
-  "mentalcoach.neocities.org": {
-    "c": "D",
-    "n": "Mental Coaching"
-  },
-  "videoshorts.neocities.org": {
-    "c": "D",
-    "n": "Video Shorts"
-  },
-  "schooldebate.neocities.org": {
-    "c": "D",
-    "n": "Debate in Classe"
-  },
-  "laboscrittura.vercel.app": {
-    "c": "E",
-    "n": "BottegaScrivi"
-  },
-  "fakehunter.neocities.org": {
-    "c": "D",
-    "n": "Fake Hunter"
-  },
-  "truffe.neocities.org": {
-    "c": "D",
-    "n": "Truffe & Phishing"
-  },
-  "stampa3d.neocities.org": {
-    "c": "D",
-    "n": "Stampa 3D"
-  },
-  "keyboardmac.neocities.org": {
-    "c": "D",
-    "n": "Scorciatoie Mac"
-  },
-  "glossarioinfo.neocities.org": {
-    "c": "D",
-    "n": "Glossario Digitale"
-  },
-  "typegame.neocities.org": {
-    "c": "D",
-    "n": "Sfida di Videoscrittura"
-  },
-  "tastiera.neocities.org": {
-    "c": "D",
-    "n": "Allenamento Tastiera"
-  },
-  "barscuola.neocities.org": {
-    "c": "D",
-    "n": "Bar della Scuola"
-  },
-  "genalfa.neocities.org": {
-    "c": "D",
-    "n": "Algoritmi e Reti Neurali"
-  },
-  "escapecity.vercel.app": {
-    "c": "D",
-    "n": "Guarda Due Volte"
-  },
-  "geografiamaps.neocities.org": {
-    "c": "D",
-    "n": "Gite Virtuali"
-  },
-  "sacrafamiglialabinfo.neocities.org": {
-    "c": "D",
-    "n": "Ciro il Dinosauro"
-  },
-  "dinosauri.neocities.org": {
-    "c": "D",
-    "n": "Il Mondo dei Dinosauri"
-  },
-  "apparati.neocities.org": {
-    "c": "D",
-    "n": "Il Corpo Umano"
-  },
-  "esame.neocities.org": {
-    "c": "D",
-    "n": "Esame di Stato"
-  },
-  "invalsi.neocities.org": {
-    "c": "D",
-    "n": "Missione INVALSI 2026"
-  },
-  "debaterrore.neocities.org": {
-    "c": "D",
-    "n": "Debate sull'Errore"
-  },
-  "notebooklmstyle.neocities.org": {
-    "c": "D",
-    "n": "Infografiche con Notebook LM"
-  },
-  "labinfo.my.canva.site/canto3": {
-    "c": "D",
-    "n": "Canto III - Divina Commedia"
-  },
-  "garagevalley.neocities.org": {
-    "c": "D",
-    "n": "I Geni della Tecnologia"
-  },
-  "labscienze.vercel.app": {
-    "c": "D",
-    "n": "Laboratorio Scientifico"
-  },
-  "sintesiproteica.vercel.app": {
-    "c": "D",
-    "n": "Sintesi Proteica"
-  },
-  "100anni.neocities.org": {
-    "c": "D",
-    "n": "100 Anni di Storia in Musica"
-  },
-  "sfida.neocities.org": {
-    "c": "D",
-    "n": "Il Gioco delle Case"
-  },
-  "autovalutazione.neocities.org": {
-    "c": "E",
-    "n": "Autovalutazione Lezione"
-  },
-  "sacrafamiglia.neocities.org": {
-    "c": "D",
-    "n": "Le Mascotte delle Case"
-  },
-  "santapaola.neocities.org": {
-    "c": "D",
-    "n": "S. Paola Elisabetta"
-  },
-  "quizzonespaola.neocities.org": {
-    "c": "D",
-    "n": "Quizzone S. Paola"
-  },
-  "randomecase.neocities.org": {
-    "c": "D",
-    "n": "Consegna alle Case"
-  },
-  "studiomusicale.neocities.org": {
-    "c": "D",
-    "n": "Studio Musicale"
-  },
-  "giamaica.neocities.org": {
-    "c": "D",
-    "n": "Cool Runnings"
-  },
-  "labinfo.my.canva.site/c17sxqtedy2jyaw7": {
-    "c": "D",
-    "n": "Milano Cortina"
-  },
-  "olimpictech.neocities.org": {
-    "c": "D",
-    "n": "Tech & Olimpiadi"
-  },
-  "milanocortina.neocities.org": {
-    "c": "D",
-    "n": "Milano-Cortina 2026"
-  },
-  "sacrafamigliatornei.neocities.org": {
-    "c": "E",
-    "n": "Gestione Tornei"
-  },
-  "sacrafamigliagames.neocities.org": {
-    "c": "D",
-    "n": "Word Games"
-  },
-  "profemon.neocities.org": {
-    "c": "D",
-    "n": "Profemon"
+(function() {
+  'use strict';
+  
+  const URL_MAP = {
+  "https://sondaggiostudenti.vercel.app": {
+    "cluster": "E",
+    "name": "TI ASCOLTO!"
+  },
+  "https://calibro.neocities.org": {
+    "cluster": "F",
+    "name": "Calibro"
+  },
+  "https://pattodigitale.neocities.org": {
+    "cluster": "D",
+    "name": "Patto Digitale di Famiglia"
+  },
+  "https://genitori.neocities.org": {
+    "cluster": "D",
+    "name": "Guida per Genitori"
+  },
+  "https://scuolaipad.neocities.org": {
+    "cluster": "D",
+    "name": "Scuola Digitale"
+  },
+  "https://chatbotai.neocities.org": {
+    "cluster": "D",
+    "name": "Didattica e AI"
+  },
+  "https://ineai.neocities.org": {
+    "cluster": "D",
+    "name": "IN + IA"
+  },
+  "https://guglielmoildentone.neocities.org": {
+    "cluster": "D",
+    "name": "L'Occhio Critico"
+  },
+  "https://manipolazione.neocities.org": {
+    "cluster": "D",
+    "name": "Riconosci la Manipolazione"
+  },
+  "https://socialschool.neocities.org": {
+    "cluster": "D",
+    "name": "Social sotto la Lente"
+  },
+  "https://comportamentismo.neocities.org": {
+    "cluster": "E",
+    "name": "Sei un Piccione?"
+  },
+  "https://aiconsumi.vercel.app": {
+    "cluster": "D",
+    "name": "Quanto consuma l'AI?"
+  },
+  "https://sicofante.vercel.app": {
+    "cluster": "D",
+    "name": "Il Sicofante Digitale"
+  },
+  "https://famigliaaccorti.neocities.org": {
+    "cluster": "D",
+    "name": "Famiglia Accorti"
+  },
+  "https://socialguide.neocities.org": {
+    "cluster": "D",
+    "name": "Navigare Sicuri"
+  },
+  "https://pizzeriagoogle.neocities.org": {
+    "cluster": "D",
+    "name": "Pizzeria Google"
+  },
+  "https://securepassword.neocities.org": {
+    "cluster": "D",
+    "name": "Generatore di Password"
+  },
+  "https://cyberbullismo.neocities.org": {
+    "cluster": "D",
+    "name": "Stop Cyberbullismo"
+  },
+  "https://missionedigitale.neocities.org": {
+    "cluster": "D",
+    "name": "Indagine Digitale 2026"
+  },
+  "https://cyberescape.neocities.org": {
+    "cluster": "D",
+    "name": "CyberEscape"
+  },
+  "https://truffa-ballerina.vercel.app": {
+    "cluster": "D",
+    "name": "Il Voto che Ruba"
+  },
+  "https://attacchinformatici.neocities.org": {
+    "cluster": "D",
+    "name": "Cyber Sentinel"
+  },
+  "https://polizia-postale.vercel.app": {
+    "cluster": "D",
+    "name": "Commissariato Digitale"
+  },
+  "https://mattoncini.neocities.org": {
+    "cluster": "D",
+    "name": "I Mattoncini del Testo"
+  },
+  "https://errore.neocities.org": {
+    "cluster": "D",
+    "name": "Trasformiamo l'Errore in Opportunita"
+  },
+  "https://fattopinione.vercel.app": {
+    "cluster": "D",
+    "name": "Fatto o Opinione?"
+  },
+  "https://scrivere.neocities.org": {
+    "cluster": "D",
+    "name": "Le 3 Forme del Testo"
+  },
+  "https://laboratorioscrittura2.neocities.org": {
+    "cluster": "D",
+    "name": "Testo Descrittivo"
+  },
+  "https://immagine.neocities.org": {
+    "cluster": "D",
+    "name": "Scrivere con le Immagini"
+  },
+  "https://insegnareapensare.vercel.app": {
+    "cluster": "D",
+    "name": "La Bottega dell'Argomentazione"
+  },
+  "https://laboratorioscrittura.neocities.org": {
+    "cluster": "D",
+    "name": "Testo Argomentativo"
+  },
+  "https://argomentor.vercel.app": {
+    "cluster": "D",
+    "name": "ArgoMentor"
+  },
+  "https://ascolto.neocities.org": {
+    "cluster": "D",
+    "name": "Scrivere dall'Ascolto"
+  },
+  "https://mentalcoach.neocities.org": {
+    "cluster": "D",
+    "name": "Mental Coaching"
+  },
+  "https://videoshorts.neocities.org": {
+    "cluster": "D",
+    "name": "Video Shorts"
+  },
+  "https://schooldebate.neocities.org": {
+    "cluster": "D",
+    "name": "Debate in Classe"
+  },
+  "https://laboscrittura.vercel.app": {
+    "cluster": "E",
+    "name": "BottegaScrivi"
+  },
+  "https://tracciatema.neocities.org": {
+    "cluster": "D",
+    "name": "ScriviMeglio"
+  },
+  "https://fakehunter.neocities.org": {
+    "cluster": "D",
+    "name": "Fake Hunter"
+  },
+  "https://truffe.neocities.org": {
+    "cluster": "D",
+    "name": "Truffe & Phishing"
+  },
+  "https://stampa3d.neocities.org": {
+    "cluster": "D",
+    "name": "Stampa 3D"
+  },
+  "https://keyboardmac.neocities.org": {
+    "cluster": "D",
+    "name": "Scorciatoie Mac"
+  },
+  "https://glossarioinfo.neocities.org": {
+    "cluster": "D",
+    "name": "Glossario Digitale"
+  },
+  "https://typegame.neocities.org": {
+    "cluster": "D",
+    "name": "Sfida di Videoscrittura"
+  },
+  "https://tastiera.neocities.org": {
+    "cluster": "D",
+    "name": "Allenamento Tastiera"
+  },
+  "https://pesodigitale.neocities.org": {
+    "cluster": "D",
+    "name": "La Scala Digitale"
+  },
+  "https://barscuola.neocities.org": {
+    "cluster": "D",
+    "name": "Bar della Scuola"
+  },
+  "https://genalfa.neocities.org": {
+    "cluster": "D",
+    "name": "Algoritmi e Reti Neurali"
+  },
+  "https://escapecity.vercel.app": {
+    "cluster": "D",
+    "name": "Guarda Due Volte"
+  },
+  "https://geografiamaps.neocities.org": {
+    "cluster": "D",
+    "name": "Gite Virtuali"
+  },
+  "https://sacrafamiglialabinfo.neocities.org": {
+    "cluster": "D",
+    "name": "Ciro il Dinosauro"
+  },
+  "https://dinosauri.neocities.org": {
+    "cluster": "D",
+    "name": "Il Mondo dei Dinosauri"
+  },
+  "https://apparati.neocities.org": {
+    "cluster": "D",
+    "name": "Il Corpo Umano"
+  },
+  "https://pontremoli.neocities.org": {
+    "cluster": "D",
+    "name": "Pontremoli - Tesina"
+  },
+  "https://esame.neocities.org": {
+    "cluster": "D",
+    "name": "Esame di Stato"
+  },
+  "https://invalsi.neocities.org": {
+    "cluster": "D",
+    "name": "Missione INVALSI 2026"
+  },
+  "https://debaterrore.neocities.org": {
+    "cluster": "D",
+    "name": "Debate sull'Errore"
+  },
+  "https://notebooklmstyle.neocities.org": {
+    "cluster": "D",
+    "name": "Infografiche con Notebook LM"
+  },
+  "https://teamdebate.neocities.org": {
+    "cluster": "D",
+    "name": "Arena del Pensiero"
+  },
+  "https://labinfo.my.canva.site/canto3": {
+    "cluster": "D",
+    "name": "Canto III - Divina Commedia"
+  },
+  "https://garagevalley.neocities.org": {
+    "cluster": "D",
+    "name": "I Geni della Tecnologia"
+  },
+  "https://labscienze.vercel.app": {
+    "cluster": "D",
+    "name": "Laboratorio Scientifico"
+  },
+  "https://sintesiproteica.vercel.app": {
+    "cluster": "D",
+    "name": "Sintesi Proteica"
+  },
+  "https://100anni.neocities.org": {
+    "cluster": "D",
+    "name": "100 Anni di Storia in Musica"
+  },
+  "https://sfida.neocities.org": {
+    "cluster": "D",
+    "name": "Il Gioco delle Case"
+  },
+  "https://autovalutazione.neocities.org": {
+    "cluster": "E",
+    "name": "Autovalutazione Lezione"
+  },
+  "https://sacrafamiglia.neocities.org": {
+    "cluster": "D",
+    "name": "Le Mascotte delle Case"
+  },
+  "https://santapaola.neocities.org": {
+    "cluster": "D",
+    "name": "S. Paola Elisabetta"
+  },
+  "https://quizzonespaola.neocities.org": {
+    "cluster": "D",
+    "name": "Quizzone S. Paola"
+  },
+  "https://randomecase.neocities.org": {
+    "cluster": "D",
+    "name": "Consegna alle Case"
+  },
+  "https://studiomusicale.neocities.org": {
+    "cluster": "D",
+    "name": "Studio Musicale"
+  },
+  "https://giamaica.neocities.org": {
+    "cluster": "D",
+    "name": "Cool Runnings"
+  },
+  "https://labinfo.my.canva.site/c17sxqtedy2jyaw7": {
+    "cluster": "D",
+    "name": "Milano Cortina"
+  },
+  "https://olimpictech.neocities.org": {
+    "cluster": "D",
+    "name": "Tech & Olimpiadi"
+  },
+  "https://milanocortina.neocities.org": {
+    "cluster": "D",
+    "name": "Milano-Cortina 2026"
+  },
+  "https://sacrafamigliatornei.neocities.org": {
+    "cluster": "E",
+    "name": "Gestione Tornei"
+  },
+  "https://sacrafamigliagames.neocities.org": {
+    "cluster": "D",
+    "name": "Word Games"
+  },
+  "https://profemon.neocities.org": {
+    "cluster": "D",
+    "name": "Profemon"
   }
-},
-    clusters: {
+};
+  
+  const CLUSTER_META = {
   "A": {
+    "label": "A",
     "name": "Profilazione studenti",
     "risk": "ALTO",
     "color": "#8B4A3C",
-    "status": "DPIA + FRIA"
+    "bg": "#F4E6E2"
   },
   "B": {
+    "label": "B",
     "name": "Monitoraggio comportamentale",
     "risk": "ALTO-MEDIO",
     "color": "#B8860B",
-    "status": "DPIA + FRIA"
+    "bg": "#FBF3DC"
   },
   "C": {
-    "name": "Chatbot / IA generativa",
+    "label": "C",
+    "name": "IA generativa",
     "risk": "MEDIO",
     "color": "#1E4A8A",
-    "status": "DPIA + DPA"
+    "bg": "#E4EAF3"
   },
   "D": {
+    "label": "D",
     "name": "Senza dati personali",
     "risk": "MINIMO",
     "color": "#6B7280",
-    "status": "Registro art. 30"
+    "bg": "#EDEFF2"
   },
   "E": {
+    "label": "E",
     "name": "Raccolta dati studenti",
     "risk": "BASSO-MEDIO",
     "color": "#4A5160",
-    "status": "DPIA semplificata"
+    "bg": "#F1F3F7"
   },
   "F": {
+    "label": "F",
     "name": "Strumenti professionali docenti",
     "risk": "BASSO",
     "color": "#2C5F8D",
-    "status": "DPIA semplificata"
+    "bg": "#E4EAF3"
   }
-}
-  };
-
-  // CSS iniettato una volta sola
-  const STYLE_ID = 'dpia-badges-style';
-  if (!document.getElementById(STYLE_ID)){
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-      .dpia-badge{
-        display:inline-flex;align-items:center;justify-content:center;
-        min-width:18px;height:18px;padding:0 5px;
-        font-size:10.5px;font-weight:700;letter-spacing:.04em;
-        color:#fff;margin-left:6px;vertical-align:1px;
-        border-radius:9px;cursor:help;position:relative;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-        box-shadow:0 1px 2px rgba(0,0,0,.12);
-        transition:transform .15s;
+};
+  
+  // Inietta CSS dei badge
+  function injectStyles() {
+    if (document.getElementById('dpia-badges-style')) return;
+    const css = `
+      .dpia-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        margin-left: 6px;
+        font-family: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        border-radius: 3px;
+        vertical-align: 1px;
+        cursor: help;
+        transition: transform 0.15s ease;
       }
-      .dpia-badge:hover{transform:scale(1.15)}
-      .dpia-A{background:#8B4A3C}
-      .dpia-B{background:#B8860B}
-      .dpia-C{background:#1E4A8A}
-      .dpia-D{background:#6B7280}
-      .dpia-E{background:#4A5160}
-      .dpia-F{background:#2C5F8D}
-
-      .dpia-tooltip{
-        position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(-4px);
-        background:#142E5A;color:#fff;padding:8px 12px;border-radius:4px;
-        font-size:11.5px;font-weight:400;letter-spacing:0;line-height:1.4;
-        white-space:nowrap;pointer-events:none;opacity:0;
-        transition:opacity .15s;z-index:9999;
-        box-shadow:0 4px 12px rgba(0,0,0,.2);
-        min-width:200px;white-space:normal;text-align:left;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      .dpia-badge:hover {
+        transform: translateY(-1px);
       }
-      .dpia-tooltip strong{display:block;font-weight:600;margin-bottom:3px;font-size:12px}
-      .dpia-tooltip .risk{font-size:10px;opacity:.8;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
-      .dpia-tooltip::after{
-        content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
-        border:4px solid transparent;border-top-color:#142E5A;
+      .dpia-A { background: #F4E6E2; color: #8B4A3C; }
+      .dpia-B { background: #FBF3DC; color: #B8860B; }
+      .dpia-C { background: #E4EAF3; color: #1E4A8A; }
+      .dpia-D { background: #EDEFF2; color: #6B7280; }
+      .dpia-E { background: #F1F3F7; color: #4A5160; }
+      .dpia-F { background: #E4EAF3; color: #2C5F8D; }
+      
+      /* Legenda fissa in basso a destra */
+      .dpia-legend {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        background: #FFFFFF;
+        border: 1px solid #DDE1E7;
+        border-radius: 4px;
+        padding: 12px 14px;
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-size: 11.5px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        z-index: 9999;
+        max-width: 280px;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.2s, transform 0.2s;
       }
-      .dpia-badge:hover .dpia-tooltip{opacity:1}
-
-      .dpia-footer-note{
-        max-width:1100px;margin:40px auto 20px;padding:16px 20px;
-        background:#F3F6FB;border-left:3px solid #1E4A8A;border-radius:2px;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-        font-size:12.5px;color:#4A5160;line-height:1.6;
+      .dpia-legend.visible {
+        opacity: 1;
+        transform: translateY(0);
       }
-      .dpia-footer-note strong{color:#142E5A;font-weight:600}
-      .dpia-footer-note a{color:#1E4A8A;text-decoration:underline}
-      .dpia-footer-note .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px}
-      .dpia-footer-note .legend span{display:inline-flex;align-items:center;gap:5px}
-      .dpia-footer-note .legend .dpia-badge{margin-left:0;cursor:default}
+      .dpia-legend-toggle {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+        background: #1E4A8A;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        font-family: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        z-index: 9999;
+        transition: transform 0.15s ease, background 0.15s;
+      }
+      .dpia-legend-toggle:hover { background: #142E5A; transform: scale(1.05); }
+      .dpia-legend-toggle.hidden { display: none; }
+      .dpia-legend-title {
+        font-weight: 700;
+        color: #142E5A;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #DDE1E7;
+      }
+      .dpia-legend-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+        line-height: 1.4;
+      }
+      .dpia-legend-row:last-child { margin-bottom: 0; }
+      .dpia-legend-close {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #5A6270;
+        font-size: 16px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 2px 6px;
+      }
+      .dpia-legend-close:hover { color: #1E4A8A; }
+      .dpia-legend-footer {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dotted #DDE1E7;
+        font-size: 10px;
+        color: #5A6270;
+        font-style: italic;
+      }
     `;
+    const style = document.createElement('style');
+    style.id = 'dpia-badges-style';
+    style.textContent = css;
     document.head.appendChild(style);
   }
-
-  function normalizeUrl(url){
-    if (!url) return '';
-    return url.replace(/^https?:\/\//i, '').replace(/\/$/, '').replace(/^www\./i, '').toLowerCase().split(/[?#]/)[0];
+  
+  // Normalizza URL per il match
+  function normalizeUrl(url) {
+    return url.replace(//$/, '').toLowerCase();
   }
-
-  function createBadge(cluster){
-    const info = DPIA_DATA.clusters[cluster];
-    if (!info) return null;
-    const span = document.createElement('span');
-    span.className = 'dpia-badge dpia-' + cluster;
-    span.textContent = cluster;
-    span.setAttribute('data-dpia', cluster);
-
-    const tip = document.createElement('span');
-    tip.className = 'dpia-tooltip';
-    tip.innerHTML = '<strong>Cluster ' + cluster + ' — ' + info.name + '</strong>' +
-      'Copertura: ' + info.status +
-      '<div class="risk">Rischio ' + info.risk + '</div>';
-    span.appendChild(tip);
-
-    return span;
+  
+  // Inietta il badge accanto al testo
+  function injectBadge(linkElement, cluster) {
+    const meta = CLUSTER_META[cluster];
+    if (!meta) return;
+    
+    // Cerca il contenitore del nome (gestisce diverse strutture HTML del portale)
+    const nameEl = linkElement.querySelector('.link-name') || linkElement;
+    
+    // Evita doppi badge
+    if (nameEl.querySelector('.dpia-badge')) return;
+    
+    const badge = document.createElement('span');
+    badge.className = 'dpia-badge dpia-' + cluster;
+    badge.textContent = meta.label;
+    badge.title = 'Cluster ' + cluster + ': ' + meta.name + ' — Rischio ' + meta.risk + '. Classificato secondo GDPR e AI Act.';
+    
+    nameEl.appendChild(badge);
   }
-
-  function processLinks(){
+  
+  // Crea legenda flottante
+  function createLegend() {
+    const counts = {};
+    Object.values(URL_MAP).forEach(item => {
+      counts[item.cluster] = (counts[item.cluster] || 0) + 1;
+    });
+    
+    const toggle = document.createElement('button');
+    toggle.className = 'dpia-legend-toggle';
+    toggle.textContent = 'i';
+    toggle.title = 'Legenda bollini conformità';
+    toggle.setAttribute('aria-label', 'Mostra legenda bollini DPIA');
+    
+    const legend = document.createElement('div');
+    legend.className = 'dpia-legend';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'dpia-legend-close';
+    closeBtn.textContent = '×';
+    closeBtn.setAttribute('aria-label', 'Chiudi legenda');
+    
+    const title = document.createElement('div');
+    title.className = 'dpia-legend-title';
+    title.textContent = 'Bollini conformità GDPR / AI Act';
+    
+    legend.appendChild(closeBtn);
+    legend.appendChild(title);
+    
+    Object.keys(CLUSTER_META).forEach(cluster => {
+      if (!counts[cluster]) return;
+      const row = document.createElement('div');
+      row.className = 'dpia-legend-row';
+      const badge = document.createElement('span');
+      badge.className = 'dpia-badge dpia-' + cluster;
+      badge.textContent = cluster;
+      const text = document.createElement('span');
+      text.textContent = CLUSTER_META[cluster].name + ' (' + counts[cluster] + ')';
+      row.appendChild(badge);
+      row.appendChild(text);
+      legend.appendChild(row);
+    });
+    
+    const footer = document.createElement('div');
+    footer.className = 'dpia-legend-footer';
+    footer.textContent = 'Aggiornato al 2026-04-30 — ' + Object.keys(URL_MAP).length + ' applicazioni';
+    legend.appendChild(footer);
+    
+    document.body.appendChild(toggle);
+    document.body.appendChild(legend);
+    
+    toggle.addEventListener('click', () => {
+      legend.classList.add('visible');
+      toggle.classList.add('hidden');
+    });
+    closeBtn.addEventListener('click', () => {
+      legend.classList.remove('visible');
+      toggle.classList.remove('hidden');
+    });
+  }
+  
+  // Funzione principale: scansiona i link del portale e inietta i badge
+  function applyBadges() {
+    injectStyles();
+    
+    let injected = 0;
     const links = document.querySelectorAll('a[href]');
-    let added = 0;
+    
     links.forEach(link => {
-      // Evita duplicati
-      if (link.dataset.dpiaProcessed) return;
       const href = link.getAttribute('href');
-      if (!href) return;
-
-      // Risolvi URL assoluto
-      let absolute;
-      try {
-        absolute = new URL(href, window.location.href).href;
-      } catch(e) { return; }
-
-      const norm = normalizeUrl(absolute);
-      if (!norm) return;
-
-      // Match esatto
-      let match = DPIA_DATA.apps[norm];
-
-      // Fallback: match per hostname principale
-      if (!match){
-        const host = norm.split('/')[0];
-        for (const key in DPIA_DATA.apps){
-          if (key.split('/')[0] === host){ match = DPIA_DATA.apps[key]; break; }
-        }
-      }
-
-      if (match){
-        const badge = createBadge(match.c);
-        if (badge){
-          link.appendChild(badge);
-          link.dataset.dpiaProcessed = '1';
-          added++;
-        }
+      if (!href || !href.startsWith('http')) return;
+      
+      const norm = normalizeUrl(href);
+      const item = URL_MAP[norm];
+      if (item) {
+        injectBadge(link, item.cluster);
+        injected++;
       }
     });
-    return added;
-  }
-
-  function addFooterNote(){
-    if (document.getElementById('dpia-footer-note')) return;
-    const note = document.createElement('aside');
-    note.id = 'dpia-footer-note';
-    note.className = 'dpia-footer-note';
-    const counts = {A:0,B:0,C:0,D:0,E:0,F:0};
-    Object.values(DPIA_DATA.apps).forEach(a => counts[a.c]++);
-    const total = Object.keys(DPIA_DATA.apps).length;
-
-    const legendItems = ['A','B','C','D','E','F'].filter(c => counts[c] > 0).map(c => {
-      const info = DPIA_DATA.clusters[c];
-      return '<span><span class="dpia-badge dpia-' + c + '">' + c + '</span> ' + info.name + ' (' + counts[c] + ')</span>';
-    }).join('');
-
-    note.innerHTML =
-      '<strong>Trasparenza IA — bollini di conformità</strong><br>' +
-      'Le applicazioni contrassegnate dai bollini colorati sono state classificate e valutate secondo il <strong>GDPR</strong>, l\'<strong>AI Act (UE) 2024/1689</strong> e le <strong>Linee guida MIM 2025</strong>. ' +
-      'Ogni bollino indica il cluster di rischio e il tipo di documentazione di conformità prodotta. ' +
-      'Totale applicazioni classificate: <strong>' + total + '</strong>. Ultima revisione: <strong>' + DPIA_DATA.updated + '</strong>.' +
-      '<div class="legend">' + legendItems + '</div>';
-
-    document.body.appendChild(note);
-  }
-
-  function init(){
-    const added = processLinks();
-    addFooterNote();
-    console.log('[DPIA Badges] ' + added + ' bollini aggiunti · ' + Object.keys(DPIA_DATA.apps).length + ' app classificate · aggiornato ' + DPIA_DATA.updated);
-
-    // Observer per contenuti caricati dinamicamente
-    if (window.MutationObserver){
-      const obs = new MutationObserver(muts => {
-        let shouldProcess = false;
-        muts.forEach(m => {
-          m.addedNodes.forEach(n => {
-            if (n.nodeType === 1 && (n.tagName === 'A' || n.querySelector && n.querySelector('a'))) shouldProcess = true;
-          });
-        });
-        if (shouldProcess) processLinks();
-      });
-      obs.observe(document.body, {childList:true, subtree:true});
+    
+    if (injected > 0) {
+      createLegend();
     }
+    
+    console.log('[DPIA Badges] ' + injected + ' bollini iniettati su ' + Object.keys(URL_MAP).length + ' app classificate');
   }
-
-  if (document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
+  
+  // Inizializza al DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyBadges);
   } else {
-    init();
+    applyBadges();
   }
 })();
