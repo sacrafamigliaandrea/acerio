@@ -380,6 +380,15 @@
   }
 };
   
+  const CLUSTER_DESC = {
+    "A": "App con profilazione dello studente: raccoglie dati comportamentali, costruisce profili individuali, genera report. Richiede DPIA completa, consenso informato e misure di minimizzazione. Coperta da Valutazione d'impatto art. 35 GDPR.",
+    "B": "App con monitoraggio comportamentale in tempo reale: rileva pattern di utilizzo, velocità, click, interazioni. Dati trattati localmente senza trasmissione a server esterni. Coperta da Registro trattamenti art. 30 GDPR + valutazione rischio AI Act.",
+    "C": "App che integra modelli di IA generativa per la produzione di contenuti o l'interazione didattica. I prompt possono contenere dati personali. Coperta da Registro trattamenti art. 30 GDPR + obblighi trasparenza AI Act.",
+    "D": "App single-page client-side senza alcun trattamento di dati personali identificativi. Architettura zero-backend. Coperta da Registro semplificato art. 30 GDPR.",
+    "E": "App che raccoglie dati identificativi dello studente (nome, classe, risposte) per finalità didattiche. Dati trasmessi a backend sicuro. Coperta da Registro trattamenti art. 30 GDPR + informativa privacy.",
+    "F": "Strumento riservato ai docenti per la gestione professionale. Accesso protetto da autenticazione. Nessun dato studente trattato direttamente. Coperta da Registro trattamenti art. 30 GDPR."
+  };
+
   // Inietta CSS dei badge
   function injectStyles() {
     if (document.getElementById('dpia-badges-style')) return;
@@ -432,6 +441,67 @@
         transform: translateX(-50%) scale(1);
       }
       .dpia-badge { position: relative; }
+
+      /* Popout overlay */
+      .dpia-popout-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+        z-index: 99998; opacity: 0; transition: opacity 0.2s ease;
+        backdrop-filter: blur(3px);
+      }
+      .dpia-popout-overlay.visible { opacity: 1; }
+      .dpia-popout {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
+        background: #fff; border-radius: 16px; padding: 1.8rem 2rem 1.4rem;
+        max-width: 420px; width: 90vw; z-index: 99999;
+        box-shadow: 0 24px 48px rgba(0,0,0,0.18); opacity: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        font-family: 'DM Sans', system-ui, sans-serif;
+      }
+      .dpia-popout.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      .dpia-popout-header {
+        display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+      }
+      .dpia-popout-pill {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 28px; height: 28px; padding: 0 8px; border-radius: 6px;
+        font-size: 14px; font-weight: 800; letter-spacing: 0.04em;
+      }
+      .dpia-popout-cluster {
+        font-size: 14px; font-weight: 700; color: #2d3047; line-height: 1.3;
+      }
+      .dpia-popout-risk {
+        font-size: 11px; font-weight: 600; color: #8b90a8;
+        text-transform: uppercase; letter-spacing: 0.06em;
+      }
+      .dpia-popout-appname {
+        font-size: 16px; font-weight: 800; color: #2d3047;
+        margin-bottom: 10px; line-height: 1.3;
+      }
+      .dpia-popout-desc {
+        font-size: 12.5px; font-weight: 500; color: #5a5f7d;
+        line-height: 1.6; margin-bottom: 18px;
+      }
+      .dpia-popout-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 10px 20px; border-radius: 10px; border: none;
+        background: #1a535c; color: #fff; font-family: 'DM Sans', system-ui, sans-serif;
+        font-size: 13px; font-weight: 700; cursor: pointer;
+        transition: background 0.2s ease, transform 0.15s ease;
+        text-decoration: none;
+      }
+      .dpia-popout-btn:hover { background: #164349; transform: translateY(-1px); }
+      .dpia-popout-footer {
+        margin-top: 16px; padding-top: 12px; border-top: 1px solid #e8ecf0;
+        font-size: 10px; font-weight: 600; color: #b0b5c0;
+        text-align: center; letter-spacing: 0.03em;
+      }
+      .dpia-popout-close {
+        position: absolute; top: 12px; right: 14px; background: none;
+        border: none; font-size: 20px; color: #b0b5c0; cursor: pointer;
+        width: 32px; height: 32px; display: flex; align-items: center;
+        justify-content: center; border-radius: 8px; transition: all 0.15s ease;
+      }
+      .dpia-popout-close:hover { background: #f0f2f5; color: #2d3047; }
       .dpia-A { background: #F4E6E2; color: #8B4A3C; }
       .dpia-B { background: #FBF3DC; color: #B8860B; }
       .dpia-C { background: #E4EAF3; color: #1E4A8A; }
@@ -533,7 +603,7 @@
   }
   
   // Inietta il badge accanto al testo
-  function injectBadge(linkElement, cluster) {
+  function injectBadge(linkElement, cluster, appUrl) {
     const meta = CLUSTER_META[cluster];
     if (!meta) return;
     
@@ -543,12 +613,72 @@
     // Evita doppi badge
     if (nameEl.querySelector('.dpia-badge')) return;
     
+    const appName = nameEl.textContent.trim();
+    
     const badge = document.createElement('span');
     badge.className = 'dpia-badge dpia-' + cluster;
     badge.textContent = meta.label;
-    badge.setAttribute('data-tip', 'Cluster ' + cluster + ': ' + meta.name + ' — Rischio ' + meta.risk + '. Classificato secondo GDPR e AI Act.');
+    badge.setAttribute('data-tip', meta.name + ' — Rischio ' + meta.risk);
+    badge.setAttribute('data-cluster', cluster);
+    badge.setAttribute('data-appname', appName);
+    badge.setAttribute('data-appurl', appUrl);
+    
+    badge.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      showPopout(cluster, appName, appUrl);
+    });
     
     nameEl.appendChild(badge);
+  }
+  
+  // Popout completo
+  function showPopout(cluster, appName, appUrl) {
+    // Rimuovi eventuale popout esistente
+    var old = document.querySelector('.dpia-popout-overlay');
+    if (old) old.remove();
+    
+    var meta = CLUSTER_META[cluster];
+    var desc = CLUSTER_DESC[cluster] || '';
+    
+    var overlay = document.createElement('div');
+    overlay.className = 'dpia-popout-overlay';
+    
+    var popout = document.createElement('div');
+    popout.className = 'dpia-popout';
+    popout.innerHTML = 
+      '<button class="dpia-popout-close">&times;</button>' +
+      '<div class="dpia-popout-header">' +
+        '<span class="dpia-popout-pill dpia-' + cluster + '" style="background:' + meta.bg + ';color:' + meta.color + '">' + meta.label + '</span>' +
+        '<div><div class="dpia-popout-cluster">' + meta.name + '</div>' +
+        '<div class="dpia-popout-risk">Rischio ' + meta.risk + '</div></div>' +
+      '</div>' +
+      '<div class="dpia-popout-appname">' + appName + '</div>' +
+      '<div class="dpia-popout-desc">' + desc + '</div>' +
+      '<a href="' + appUrl + '" target="_blank" class="dpia-popout-btn">Apri applicazione &#8599;</a>' +
+      '<div class="dpia-popout-footer">Classificazione DPIA Studio &middot; GDPR + AI Act</div>';
+    
+    overlay.appendChild(popout);
+    document.body.appendChild(overlay);
+    
+    requestAnimationFrame(function() {
+      overlay.classList.add('visible');
+      popout.classList.add('visible');
+    });
+    
+    function close() {
+      overlay.classList.remove('visible');
+      popout.classList.remove('visible');
+      setTimeout(function() { overlay.remove(); }, 200);
+    }
+    
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) close();
+    });
+    popout.querySelector('.dpia-popout-close').addEventListener('click', close);
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+    });
   }
   
   // Crea legenda flottante
@@ -625,7 +755,7 @@
       const norm = normalizeUrl(href);
       const item = URL_MAP[norm];
       if (item) {
-        injectBadge(link, item.cluster);
+        injectBadge(link, item.cluster, href);
         injected++;
       }
     });
