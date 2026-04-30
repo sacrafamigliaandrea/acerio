@@ -3,7 +3,7 @@
  * Bollini di conformità GDPR/AI Act per il portale Sacra Famiglia
  * 
  * Generato automaticamente da DPIA Studio il 2026-04-30
- * 98 applicazioni classificate
+ * 79 applicazioni classificate
  * 
  * Ogni link nel portale che corrisponde a un'app classificata riceve un piccolo
  * badge colorato accanto al nome, indicante il cluster di rischio.
@@ -332,82 +332,6 @@
   "https://profemon.neocities.org": {
     "cluster": "D",
     "name": "Profemon"
-  },
-  "https://harrypotter-1.vercel.app": {
-    "cluster": "D",
-    "name": "Harry Potter e la Pietra Filosofale"
-  },
-  "https://harrypotter-2.vercel.app": {
-    "cluster": "D",
-    "name": "Harry Potter e la Camera dei Segreti"
-  },
-  "https://ventimila-leghe.vercel.app": {
-    "cluster": "D",
-    "name": "Ventimila Leghe sotto i Mari"
-  },
-  "https://pinocchio-mauve.vercel.app": {
-    "cluster": "D",
-    "name": "Le Avventure di Pinocchio"
-  },
-  "https://unonessunocentomila.vercel.app": {
-    "cluster": "D",
-    "name": "Uno, Nessuno e Centomila"
-  },
-  "https://pennutispennati.vercel.app": {
-    "cluster": "D",
-    "name": "Pennuti Spennati"
-  },
-  "https://agnellorimbalzello.vercel.app": {
-    "cluster": "E",
-    "name": "L'Agnello Rimbalzello"
-  },
-  "https://gerisgame.vercel.app": {
-    "cluster": "D",
-    "name": "La Mossa di Geri"
-  },
-  "https://parzialmentenuvoloso.vercel.app": {
-    "cluster": "D",
-    "name": "Le Nuvole di Gus"
-  },
-  "https://cignoappiccica.vercel.app": {
-    "cluster": "D",
-    "name": "Il Cigno Appiccica"
-  },
-  "https://treporcellini.vercel.app": {
-    "cluster": "D",
-    "name": "I Tre Porcellini"
-  },
-  "https://pifferaio.vercel.app": {
-    "cluster": "D",
-    "name": "Il Pifferaio Magico"
-  },
-  "https://dragoleprotto.vercel.app": {
-    "cluster": "D",
-    "name": "Il Drago e il Leprotto"
-  },
-  "https://farelatesina.vercel.app": {
-    "cluster": "D",
-    "name": "Costruisci la tua Tesina"
-  },
-  "https://gancioxcolloquio.vercel.app": {
-    "cluster": "D",
-    "name": "Il Lab del Gancio"
-  },
-  "https://indirizzo-url.vercel.app": {
-    "cluster": "D",
-    "name": "L'Indirizzo Digitale"
-  },
-  "https://homoavdventure.vercel.app": {
-    "cluster": "D",
-    "name": "Il Viaggio dell'Uomo"
-  },
-  "https://calcio-one.vercel.app": {
-    "cluster": "D",
-    "name": "Storia del Calcio"
-  },
-  "https://masterchef-iota.vercel.app": {
-    "cluster": "D",
-    "name": "Master Chef"
   }
 };
   
@@ -480,6 +404,34 @@
       .dpia-badge:hover {
         transform: translateY(-1px);
       }
+      .dpia-badge::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%) scale(0.95);
+        background: #1a1f2e;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0;
+        padding: 6px 10px;
+        border-radius: 6px;
+        white-space: nowrap;
+        max-width: 280px;
+        white-space: normal;
+        line-height: 1.4;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      .dpia-badge:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+      .dpia-badge { position: relative; }
       .dpia-A { background: #F4E6E2; color: #8B4A3C; }
       .dpia-B { background: #FBF3DC; color: #B8860B; }
       .dpia-C { background: #E4EAF3; color: #1E4A8A; }
@@ -594,7 +546,7 @@
     const badge = document.createElement('span');
     badge.className = 'dpia-badge dpia-' + cluster;
     badge.textContent = meta.label;
-    badge.title = 'Cluster ' + cluster + ': ' + meta.name + ' — Rischio ' + meta.risk + '. Classificato secondo GDPR e AI Act.';
+    badge.setAttribute('data-tip', 'Cluster ' + cluster + ': ' + meta.name + ' — Rischio ' + meta.risk + '. Classificato secondo GDPR e AI Act.');
     
     nameEl.appendChild(badge);
   }
