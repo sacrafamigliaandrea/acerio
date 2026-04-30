@@ -232,7 +232,7 @@
                 <div class="hero-stat"><span class="stat-num" data-target="91">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="15">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
-                <div class="hero-stat hero-update"><span class="stat-num">15</span><span class="stat-label">Aprile 2026<br>Ultimo aggiornamento</span></div>
+                <div class="hero-stat hero-update"><span class="stat-num" id="dayNum"></span><span class="stat-label" id="dateLabel"></span></div>
             </div>
             <div class="hero-survey">
                 <a href="https://sondaggiostudenti.vercel.app/" target="_blank">
@@ -1203,6 +1203,13 @@
                 requestAnimationFrame(tick);
             }, delay);
         });
+        /* auto-date */
+        (function() {
+            var mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+            var now = new Date();
+            document.getElementById('dayNum').textContent = now.getDate();
+            document.getElementById('dateLabel').innerHTML = mesi[now.getMonth()] + ' ' + now.getFullYear() + '<br>Ultimo aggiornamento';
+        })();
     </script>
     <script>
         function filterCards(q) {
