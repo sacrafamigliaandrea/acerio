@@ -501,7 +501,7 @@
   
   // Normalizza URL per il match
   function normalizeUrl(url) {
-    return url.replace(//$/, '').toLowerCase();
+    return url.replace(/\/$/, '').toLowerCase();
   }
   
   // Inietta il badge accanto al testo
