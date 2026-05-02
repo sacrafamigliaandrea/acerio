@@ -12,6 +12,10 @@
 :root{
   --verde:#1B6D3F;
   --verde-scuro:#0F4A29;
+  --petrolio:#0E5260;
+  --petrolio-chiaro:#2A7E8A;
+  --acqua:#7DD3A6;
+  --avorio:#F5E6CC;
   --crema:#FAF8F3;
   --carta:#FFFFFF;
   --inchiostro:#1A1A1A;
@@ -37,7 +41,7 @@ body{
   background:var(--carta);
   border:1px solid var(--grigio-chiaro);
   border-radius:4px;
-  padding:48px 48px 36px;
+  padding:40px 48px 36px;
   position:relative;
   box-shadow:0 1px 0 rgba(0,0,0,.02), 0 12px 40px -12px rgba(27,109,63,.18);
 }
@@ -48,45 +52,31 @@ body{
   background:var(--verde);
   border-radius:4px 4px 0 0;
 }
-.identita{
-  display:flex;
-  align-items:center;
-  gap:18px;
-  padding-bottom:24px;
+.intestazione{
+  text-align:center;
+  padding-bottom:28px;
   margin-bottom:32px;
   border-bottom:1px solid var(--grigio-chiaro);
 }
-.identita__logo{
-  width:84px;
-  height:84px;
-  flex-shrink:0;
-  border-radius:50%;
-  overflow:hidden;
-  background:#0a0a0a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.18);
-}
-.identita__logo img{
-  width:140%;
-  height:auto;
-  object-fit:cover;
+.intestazione svg{
+  width:200px;
+  height:200px;
   display:block;
+  margin:0 auto;
 }
-.identita__testo{flex:1;min-width:0}
-.identita__nome{
+.intestazione__nome{
   font-family:'IBM Plex Serif',Georgia,serif;
   font-size:22px;
   font-weight:500;
   color:var(--verde-scuro);
-  line-height:1.15;
+  margin-top:18px;
   letter-spacing:-.01em;
-  margin-bottom:4px;
+  line-height:1.15;
 }
-.identita__ruolo{
+.intestazione__ruolo{
   font-size:13px;
   color:var(--grigio);
+  margin-top:4px;
   letter-spacing:.02em;
 }
 .eyebrow{
@@ -112,32 +102,48 @@ h1{
   color:var(--grigio);
   margin-bottom:32px;
 }
-.orari{
+.calendario{
   background:var(--crema);
   border-left:3px solid var(--verde);
-  padding:22px 24px;
+  padding:20px 24px;
   margin-bottom:28px;
 }
-.orari__label{
+.calendario__voce{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:15px;
+  padding:6px 0;
+}
+.calendario__voce + .calendario__voce{
+  border-top:1px dashed var(--grigio-chiaro);
+  margin-top:6px;
+  padding-top:12px;
+}
+.calendario__voce.evidenziata{
+  border-left:none;
+}
+.calendario__label{
   font-size:11px;
   font-weight:500;
   letter-spacing:.16em;
   text-transform:uppercase;
   color:var(--verde);
-  margin-bottom:10px;
+  margin-bottom:4px;
 }
-.orari__riga{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  font-size:17px;
-  font-weight:400;
-}
-.orari__giorni{color:var(--inchiostro);font-weight:500}
-.orari__ora{
+.calendario__chiave{color:var(--inchiostro);font-weight:500}
+.calendario__valore{
   font-variant-numeric:tabular-nums;
   color:var(--verde-scuro);
   font-weight:500;
+}
+.calendario__voce--estate.attiva .calendario__label{color:var(--ambra)}
+.calendario__voce--estate.attiva{
+  background:rgba(184,134,11,.06);
+  margin:6px -8px 0;
+  padding:12px 8px 6px;
+  border-radius:3px;
+  border-top:none !important;
 }
 .stato{
   display:flex;
@@ -171,8 +177,8 @@ h1{
 }
 @media (max-width:480px){
   .cartolina{padding:32px 24px 28px}
-  .identita__logo{width:64px;height:64px}
-  .identita__nome{font-size:19px}
+  .intestazione svg{width:160px;height:160px}
+  .intestazione__nome{font-size:19px}
   h1{font-size:24px}
   .intro{font-size:15px}
 }
@@ -181,30 +187,59 @@ h1{
 <body>
 <main class="cartolina" role="main">
 
-  <header class="identita">
-    <div class="identita__logo">
-      <img src="aclogo.jpg" alt="Logo Andrea Cerioli">
-    </div>
-    <div class="identita__testo">
-      <div class="identita__nome">Andrea Cerioli</div>
-      <div class="identita__ruolo">Animatore Digitale · Sacra Famiglia</div>
-    </div>
+  <header class="intestazione">
+    <svg viewBox="0 0 200 200" role="img" aria-label="Orologio analogico Europe/Rome">
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#2A7E8A" stroke-width="1" opacity="0.35"/>
+      <circle cx="100" cy="100" r="90" fill="#0E5260"/>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#2A7E8A" stroke-width="1.5"/>
+
+      <g stroke="#F5E6CC" stroke-linecap="round">
+        <line x1="100" y1="14" x2="100" y2="24" stroke-width="2.5" transform="rotate(0 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(30 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(60 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="24" stroke-width="2.5" transform="rotate(90 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(120 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(150 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="24" stroke-width="2.5" transform="rotate(180 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(210 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(240 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="24" stroke-width="2.5" transform="rotate(270 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(300 100 100)"/>
+        <line x1="100" y1="14" x2="100" y2="20" stroke-width="1" opacity="0.5" transform="rotate(330 100 100)"/>
+      </g>
+
+      <rect id="hH" x="97" y="56" width="6" height="48" rx="2" fill="#F5E6CC" transform="rotate(0 100 100)"/>
+      <rect id="hM" x="98.5" y="36" width="3" height="68" rx="1.5" fill="#F5E6CC" transform="rotate(0 100 100)"/>
+      <g id="hS" transform="rotate(0 100 100)">
+        <line x1="100" y1="22" x2="100" y2="115" stroke="#7DD3A6" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="100" cy="115" r="2.5" fill="#7DD3A6"/>
+      </g>
+
+      <circle cx="100" cy="100" r="5" fill="#F5E6CC"/>
+      <circle cx="100" cy="100" r="2" fill="#0E5260"/>
+    </svg>
+
+    <div class="intestazione__nome">Andrea Cerioli</div>
+    <div class="intestazione__ruolo">Animatore Digitale · Sacra Famiglia</div>
   </header>
 
-  <div class="eyebrow">Avviso</div>
+  <div class="eyebrow" id="ey">Avviso</div>
 
-  <h1>Il portale è disponibile<br>in orario scolastico</h1>
+  <h1 id="titolo">Il portale è disponibile<br>in orario scolastico</h1>
 
-  <p class="intro">
+  <p class="intro" id="intro">
     Per favorire un uso consapevole degli strumenti digitali, l'accesso
     alle risorse è attivo solo durante le ore di lezione.
   </p>
 
-  <section class="orari" aria-label="Orari di apertura">
-    <div class="orari__label">Apertura</div>
-    <div class="orari__riga">
-      <span class="orari__giorni">Lunedì – Venerdì</span>
-      <span class="orari__ora">8:00 – 16:00</span>
+  <section class="calendario" aria-label="Calendario di apertura">
+    <div class="calendario__voce">
+      <span class="calendario__chiave">Lunedì – Venerdì</span>
+      <span class="calendario__valore">8:00 – 16:00</span>
+    </div>
+    <div class="calendario__voce calendario__voce--estate" id="voceEstate">
+      <span class="calendario__chiave">Chiusura estiva</span>
+      <span class="calendario__valore">5 giu – 13 set</span>
     </div>
   </section>
 
@@ -220,18 +255,65 @@ h1{
 
 <script>
 (function(){
-  const el = document.getElementById('oraCorrente');
-  function tick(){
-    const ora = new Intl.DateTimeFormat('it-IT', {
+
+  function partsOra(){
+    return new Intl.DateTimeFormat('en-US', {
       timeZone: 'Europe/Rome',
+      weekday: 'short',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false
-    }).format(new Date());
-    el.textContent = ora;
+      second: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date());
   }
-  tick();
-  setInterval(tick, 30000);
+
+  function isEstate(parts){
+    const month = parseInt(parts.find(p => p.type === 'month').value, 10);
+    const day = parseInt(parts.find(p => p.type === 'day').value, 10);
+    return (month === 6 && day >= 5) ||
+           month === 7 ||
+           month === 8 ||
+           (month === 9 && day <= 13);
+  }
+
+  // Imposta il testo della cartolina in base allo stato
+  (function impostaContenuto(){
+    const parts = partsOra();
+    if (isEstate(parts)) {
+      document.getElementById('ey').textContent = 'Chiusura estiva';
+      document.getElementById('titolo').innerHTML = 'Il portale<br>riapre il 14 settembre';
+      document.getElementById('intro').textContent =
+        'Buone vacanze. Le risorse digitali tornano disponibili al rientro a scuola.';
+      document.getElementById('voceEstate').classList.add('attiva');
+    }
+  })();
+
+  // Orologio analogico animato (60fps) e ora testuale
+  function aggiornaOrologio(){
+    const parts = partsOra();
+    const h  = parseInt(parts.find(p => p.type === 'hour').value, 10);
+    const m  = parseInt(parts.find(p => p.type === 'minute').value, 10);
+    const s  = parseInt(parts.find(p => p.type === 'second').value, 10);
+    const ms = new Date().getMilliseconds();
+
+    const sFrac = s + ms / 1000;
+    const mFrac = m + sFrac / 60;
+    const hFrac = (h % 12) + mFrac / 60;
+
+    document.getElementById('hH').setAttribute('transform', 'rotate(' + (hFrac * 30) + ' 100 100)');
+    document.getElementById('hM').setAttribute('transform', 'rotate(' + (mFrac * 6)  + ' 100 100)');
+    document.getElementById('hS').setAttribute('transform', 'rotate(' + (sFrac * 6)  + ' 100 100)');
+
+    // Ora testuale aggiornata a ogni nuovo minuto (granularità sufficiente)
+    document.getElementById('oraCorrente').textContent =
+      String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+
+    requestAnimationFrame(aggiornaOrologio);
+  }
+  aggiornaOrologio();
+
 })();
 </script>
 </body>

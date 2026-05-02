@@ -1,40 +1,46 @@
 // =============================================================
-// Vercel Edge Middleware — Fascia oraria portale
+// Vercel Edge Middleware — Calendario portale Andrea Cerioli
 // Apertura: Lun–Ven 8:00–16:00, fuso Europe/Rome (gestisce DST)
+// Chiusura estiva: dal 5 giugno (incluso) al 13 settembre (incluso)
+// Riapertura: 14 settembre
 // =============================================================
 
 export const config = {
-  // Intercetta tutte le richieste TRANNE: la cartolina, le risorse statiche
-  // del browser e i file di sistema Vercel
   matcher: '/((?!chiuso\\.html|favicon\\.ico|robots\\.txt|_vercel|api).*)',
 };
 
 export default function middleware(request) {
-  // Estrazione giorno e ora nel fuso Europe/Rome
-  // Intl.DateTimeFormat gestisce automaticamente CET/CEST (ora legale)
   const now = new Date();
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Europe/Rome',
     weekday: 'short',
+    month: '2-digit',
+    day: '2-digit',
     hour: '2-digit',
     hour12: false,
   }).formatToParts(now);
 
   const weekday = parts.find(p => p.type === 'weekday').value; // 'Mon'..'Sun'
+  const month = parseInt(parts.find(p => p.type === 'month').value, 10);
+  const day = parseInt(parts.find(p => p.type === 'day').value, 10);
   const hour = parseInt(parts.find(p => p.type === 'hour').value, 10);
 
-  // Regole apertura
+  // Chiusura estiva: 5 giugno → 13 settembre (incluso)
+  const isEstate =
+    (month === 6 && day >= 5) ||
+    month === 7 ||
+    month === 8 ||
+    (month === 9 && day <= 13);
+
+  // Apertura giornaliera: Lun–Ven 8:00–16:00
   const giorniScuola = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   const isGiornoScuola = giorniScuola.includes(weekday);
   const isOraScuola = hour >= 8 && hour < 16;
-  const aperto = isGiornoScuola && isOraScuola;
 
-  // Se il portale è aperto, lascia passare la richiesta normalmente
+  const aperto = !isEstate && isGiornoScuola && isOraScuola;
   if (aperto) return;
 
-  // Altrimenti: redirect 307 alla cartolina con cache disabilitata
-  // (no-store impedisce al browser di restare bloccato sulla cartolina
-  // dopo le 8:00 del mattino successivo)
+  // Redirect 307 alla cartolina con cache disabilitata
   const url = new URL('/chiuso.html', request.url);
   return new Response(null, {
     status: 307,
