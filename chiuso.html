@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Portale chiuso · Orari di apertura</title>
+<title>Portale chiuso · Andrea Cerioli</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@ body{
   background:var(--carta);
   border:1px solid var(--grigio-chiaro);
   border-radius:4px;
-  padding:56px 48px 40px;
+  padding:48px 48px 36px;
   position:relative;
   box-shadow:0 1px 0 rgba(0,0,0,.02), 0 12px 40px -12px rgba(27,109,63,.18);
 }
@@ -48,45 +48,75 @@ body{
   background:var(--verde);
   border-radius:4px 4px 0 0;
 }
-.logo{
+.identita{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding-bottom:24px;
+  margin-bottom:32px;
+  border-bottom:1px solid var(--grigio-chiaro);
+}
+.identita__logo{
+  width:84px;
+  height:84px;
+  flex-shrink:0;
+  border-radius:50%;
+  overflow:hidden;
+  background:#0a0a0a;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:28px;
+  box-shadow:0 4px 12px -4px rgba(0,0,0,.18);
 }
-.logo svg{width:64px;height:64px}
+.identita__logo img{
+  width:140%;
+  height:auto;
+  object-fit:cover;
+  display:block;
+}
+.identita__testo{flex:1;min-width:0}
+.identita__nome{
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:22px;
+  font-weight:500;
+  color:var(--verde-scuro);
+  line-height:1.15;
+  letter-spacing:-.01em;
+  margin-bottom:4px;
+}
+.identita__ruolo{
+  font-size:13px;
+  color:var(--grigio);
+  letter-spacing:.02em;
+}
 .eyebrow{
   font-size:11px;
   font-weight:500;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--verde);
-  text-align:center;
   margin-bottom:14px;
 }
 h1{
   font-family:'IBM Plex Serif',Georgia,serif;
   font-weight:500;
-  font-size:32px;
+  font-size:30px;
   line-height:1.2;
-  text-align:center;
   color:var(--verde-scuro);
   margin-bottom:14px;
   letter-spacing:-.01em;
 }
 .intro{
-  text-align:center;
   font-size:16px;
   line-height:1.55;
   color:var(--grigio);
-  max-width:420px;
-  margin:0 auto 36px;
+  margin-bottom:32px;
 }
 .orari{
   background:var(--crema);
   border-left:3px solid var(--verde);
   padding:22px 24px;
-  margin-bottom:32px;
+  margin-bottom:28px;
 }
 .orari__label{
   font-size:11px;
@@ -131,9 +161,19 @@ h1{
   color:var(--inchiostro);
   font-weight:500;
 }
+.firma{
+  text-align:center;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--grigio);
+  margin-top:20px;
+}
 @media (max-width:480px){
-  .cartolina{padding:40px 28px 32px}
-  h1{font-size:26px}
+  .cartolina{padding:32px 24px 28px}
+  .identita__logo{width:64px;height:64px}
+  .identita__nome{font-size:19px}
+  h1{font-size:24px}
   .intro{font-size:15px}
 }
 </style>
@@ -141,18 +181,17 @@ h1{
 <body>
 <main class="cartolina" role="main">
 
-  <div class="logo" aria-hidden="true">
-    <!-- Monogramma SF in cerchio: placeholder istituzionale, sostituibile con il logo della scuola -->
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="32" cy="32" r="31" fill="#1B6D3F"/>
-      <text x="32" y="42" text-anchor="middle"
-            font-family="IBM Plex Serif, Georgia, serif"
-            font-size="26" font-weight="500"
-            fill="#FFFFFF" letter-spacing="-1">SF</text>
-    </svg>
-  </div>
+  <header class="identita">
+    <div class="identita__logo">
+      <img src="aclogo.jpg" alt="Logo Andrea Cerioli">
+    </div>
+    <div class="identita__testo">
+      <div class="identita__nome">Andrea Cerioli</div>
+      <div class="identita__ruolo">Animatore Digitale · Sacra Famiglia</div>
+    </div>
+  </header>
 
-  <div class="eyebrow">Scuola Sacra Famiglia · Orzinuovi</div>
+  <div class="eyebrow">Avviso</div>
 
   <h1>Il portale è disponibile<br>in orario scolastico</h1>
 
@@ -175,10 +214,11 @@ h1{
     <span class="stato__ora" id="oraCorrente">--:--</span>
   </div>
 
+  <div class="firma">Orzinuovi · Brescia</div>
+
 </main>
 
 <script>
-// Aggiorna l'ora corrente in fuso Europe/Rome (coerente con il middleware)
 (function(){
   const el = document.getElementById('oraCorrente');
   function tick(){
@@ -191,7 +231,7 @@ h1{
     el.textContent = ora;
   }
   tick();
-  setInterval(tick, 30000); // aggiorna ogni 30s
+  setInterval(tick, 30000);
 })();
 </script>
 </body>
