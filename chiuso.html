@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Portale chiuso · Orari di apertura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#1B6D3F;
+  --verde-scuro:#0F4A29;
+  --crema:#FAF8F3;
+  --carta:#FFFFFF;
+  --inchiostro:#1A1A1A;
+  --grigio:#6B6B6B;
+  --grigio-chiaro:#E5E2DA;
+  --ambra:#B8860B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  background:var(--crema);
+  color:var(--inchiostro);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px;
+  -webkit-font-smoothing:antialiased;
+}
+.cartolina{
+  width:100%;
+  max-width:560px;
+  background:var(--carta);
+  border:1px solid var(--grigio-chiaro);
+  border-radius:4px;
+  padding:56px 48px 40px;
+  position:relative;
+  box-shadow:0 1px 0 rgba(0,0,0,.02), 0 12px 40px -12px rgba(27,109,63,.18);
+}
+.cartolina::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;height:6px;
+  background:var(--verde);
+  border-radius:4px 4px 0 0;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:28px;
+}
+.logo svg{width:64px;height:64px}
+.eyebrow{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--verde);
+  text-align:center;
+  margin-bottom:14px;
+}
+h1{
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-weight:500;
+  font-size:32px;
+  line-height:1.2;
+  text-align:center;
+  color:var(--verde-scuro);
+  margin-bottom:14px;
+  letter-spacing:-.01em;
+}
+.intro{
+  text-align:center;
+  font-size:16px;
+  line-height:1.55;
+  color:var(--grigio);
+  max-width:420px;
+  margin:0 auto 36px;
+}
+.orari{
+  background:var(--crema);
+  border-left:3px solid var(--verde);
+  padding:22px 24px;
+  margin-bottom:32px;
+}
+.orari__label{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--verde);
+  margin-bottom:10px;
+}
+.orari__riga{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:17px;
+  font-weight:400;
+}
+.orari__giorni{color:var(--inchiostro);font-weight:500}
+.orari__ora{
+  font-variant-numeric:tabular-nums;
+  color:var(--verde-scuro);
+  font-weight:500;
+}
+.stato{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:13px;
+  color:var(--grigio);
+  padding-top:24px;
+  border-top:1px solid var(--grigio-chiaro);
+}
+.stato__pallino{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--ambra);
+  box-shadow:0 0 0 3px rgba(184,134,11,.15);
+}
+.stato__ora{
+  font-variant-numeric:tabular-nums;
+  color:var(--inchiostro);
+  font-weight:500;
+}
+@media (max-width:480px){
+  .cartolina{padding:40px 28px 32px}
+  h1{font-size:26px}
+  .intro{font-size:15px}
+}
+</style>
+</head>
+<body>
+<main class="cartolina" role="main">
+
+  <div class="logo" aria-hidden="true">
+    <!-- Monogramma SF in cerchio: placeholder istituzionale, sostituibile con il logo della scuola -->
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="31" fill="#1B6D3F"/>
+      <text x="32" y="42" text-anchor="middle"
+            font-family="IBM Plex Serif, Georgia, serif"
+            font-size="26" font-weight="500"
+            fill="#FFFFFF" letter-spacing="-1">SF</text>
+    </svg>
+  </div>
+
+  <div class="eyebrow">Scuola Sacra Famiglia · Orzinuovi</div>
+
+  <h1>Il portale è disponibile<br>in orario scolastico</h1>
+
+  <p class="intro">
+    Per favorire un uso consapevole degli strumenti digitali, l'accesso
+    alle risorse è attivo solo durante le ore di lezione.
+  </p>
+
+  <section class="orari" aria-label="Orari di apertura">
+    <div class="orari__label">Apertura</div>
+    <div class="orari__riga">
+      <span class="orari__giorni">Lunedì – Venerdì</span>
+      <span class="orari__ora">8:00 – 16:00</span>
+    </div>
+  </section>
+
+  <div class="stato">
+    <span class="stato__pallino" aria-hidden="true"></span>
+    <span>Adesso sono le</span>
+    <span class="stato__ora" id="oraCorrente">--:--</span>
+  </div>
+
+</main>
+
+<script>
+// Aggiorna l'ora corrente in fuso Europe/Rome (coerente con il middleware)
+(function(){
+  const el = document.getElementById('oraCorrente');
+  function tick(){
+    const ora = new Intl.DateTimeFormat('it-IT', {
+      timeZone: 'Europe/Rome',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(new Date());
+    el.textContent = ora;
+  }
+  tick();
+  setInterval(tick, 30000); // aggiorna ogni 30s
+})();
+</script>
+</body>
+</html>
