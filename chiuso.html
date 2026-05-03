@@ -17,11 +17,11 @@
   --acqua:#7DD3A6;
   --acqua-chiaro:#9DEFC0;
   --avorio:#F5E6CC;
-  --crema:#FAF8F3;
+  --crema:#EAF1F2;
   --carta:#FFFFFF;
   --inchiostro:#1A1A1A;
   --grigio:#6B6B6B;
-  --grigio-chiaro:#E5E2DA;
+  --grigio-chiaro:#D6DEDF;
   --ambra:#B8860B;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -42,8 +42,7 @@ body{
   max-width:760px;
   background:var(--carta);
   border:1px solid var(--grigio-chiaro);
-  border-top:6px solid var(--verde);
-  border-radius:4px;
+  border-radius:12px;
   padding:0;
   position:relative;
   box-shadow:0 1px 0 rgba(0,0,0,.02), 0 12px 40px -12px rgba(27,109,63,.18);
@@ -143,52 +142,37 @@ body{
   font-style:normal;
 }
 
-
 .footer{
-  border-top:1px solid var(--grigio-chiaro);
   background:var(--crema);
-  padding:10px 44px 12px;
+  padding:14px 36px 12px;
+  text-align:center;
 }
-.footer__orari{
-  display:flex;
-  justify-content:center;
-  align-items:baseline;
-  gap:14px;
-  flex-wrap:wrap;
-  font-size:12px;
+.footer__info{
+  font-size:13px;
+  color:var(--grigio);
+  letter-spacing:.01em;
+}
+.footer__info strong{
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-weight:500;
+  color:var(--verde-scuro);
+  font-size:14px;
+}
+.footer__bullet{
+  margin:0 6px;
+  color:var(--grigio-chiaro);
 }
 .footer__firma{
-  text-align:center;
   margin-top:6px;
   font-size:10px;
   letter-spacing:.04em;
   color:var(--grigio);
-  border-top:1px dashed var(--grigio-chiaro);
-  padding-top:6px;
 }
 .footer__firma strong{
   color:var(--verde-scuro);
   font-weight:500;
 }
-.footer__eyebrow{
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--verde);
-}
-.footer__voce{
-  display:inline-flex;
-  align-items:baseline;
-  gap:8px;
-}
-.footer__chiave{color:var(--inchiostro);font-weight:500}
-.footer__valore{
-  font-variant-numeric:tabular-nums;
-  color:var(--verde-scuro);
-  font-weight:500;
-}
-.footer__sep{color:var(--grigio-chiaro)}
+
 .titolo__secondario{
   display:block;
   font-family:'IBM Plex Sans',system-ui,sans-serif;
@@ -220,15 +204,19 @@ body{
 }
 
 .scena-mondi{
-  padding:0 36px 14px;
+  margin:0;
+  padding:0;
 }
 .scena-card{
-  border:1.5px solid var(--petrolio);
-  border-radius:6px;
-  padding:18px 20px;
+  padding:22px 0 16px;
   background:#0E5260;
   background:linear-gradient(180deg, #0E5260 0%, #133A44 100%);
-  box-shadow:inset 0 0 0 1px rgba(125,211,166,0.18), 0 6px 18px -8px rgba(14,82,96,0.5);
+  border-top:1px solid var(--grigio-chiaro);
+}
+.scena-card svg{
+  display:block;
+  margin:0 auto;
+  max-width:calc(100% - 48px);
 }
 .scena-mondi svg{
   width:100%;
@@ -236,19 +224,6 @@ body{
   display:block;
   max-height:180px;
 }
-.scena-mondi__conteggio{
-  text-align:center;
-  margin-top:4px;
-  font-size:12px;
-  color:var(--grigio);
-}
-.scena-mondi__conteggio strong{
-  font-family:'IBM Plex Serif',Georgia,serif;
-  font-weight:500;
-  color:var(--verde-scuro);
-}
-
-
 
 .firma-autore{
   text-align:center;
@@ -270,12 +245,11 @@ body{
   .banner-titolo__riga2{font-size:16px}
   .titolo__secondario{font-size:14px}
   .footer{padding:14px 24px;font-size:12px;gap:10px}
-  .scena-mondi{padding:0 24px 24px}
+  .scena-card{padding:18px 20px 14px}
   .scena-mondi svg{max-height:180px}
   .manifesto{padding:14px 16px 12px}
   .manifesto__quote{font-size:15px}
 }
-
 
 @keyframes scorriMatrix {
   0%   { transform: translateX(-180px); }
@@ -320,12 +294,18 @@ body{
         <figcaption class="manifesto__attribuzione">— ispirato a Maryanne Wolf</figcaption>
       </figure>
 
-
-
     </div>
 
   </div>
 
+  <footer class="footer" aria-label="Informazioni di servizio">
+    <div class="footer__info">
+      Lun–Ven 8:00–16:00 <span class="footer__bullet">·</span> Pausa estiva 5 giu–13 set <span class="footer__bullet">·</span> Riprende fra <strong id="conto">—</strong>
+    </div>
+    <div class="footer__firma">
+      A cura di <strong>Andrea Cerioli</strong> · Animatore Digitale · Sacra Famiglia, Orzinuovi
+    </div>
+  </footer>
   <section class="scena-mondi" aria-label="Mondo reale e mondo digitale connessi">
     <div class="scena-card">
       <svg viewBox="0 0 720 250" role="img" aria-label="Due mondi connessi da un cavo dati">
@@ -370,7 +350,6 @@ body{
       <ellipse cx="360" cy="125" rx="16" ry="14" fill="#9DEFC0" opacity="0.18">
         <animate attributeName="opacity" values="0.18;0.35;0.18" dur="2.4s" repeatCount="indefinite"/>
       </ellipse>
-
 
       <g>
         <circle cx="110" cy="125" r="68" fill="none" stroke="#7DD3A6" stroke-width="2" opacity="0.4">
@@ -462,36 +441,14 @@ body{
         <circle cx="15" cy="35" r="1.8" fill="#BFFFD9"/>
       </g>
 
-      <text x="110" y="225" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#9DEFC0" letter-spacing="2" font-weight="500">MONDO REALE</text>
-      <text x="610" y="225" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#9DEFC0" letter-spacing="2" font-weight="500">MONDO DIGITALE</text>
+      <text x="110" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" fill="#9DEFC0" letter-spacing="3" font-weight="500">MONDO REALE</text>
+      <text x="610" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" fill="#9DEFC0" letter-spacing="3" font-weight="500">MONDO DIGITALE</text>
     </svg>
     </div>
 
-    <div class="scena-mondi__conteggio">
-      Riprende fra <strong id="conto">—</strong>
-    </div>
   </section>
 
-  <footer class="footer" aria-label="Calendario di apertura">
-    <div class="footer__orari">
-      <span class="footer__eyebrow">Orari</span>
-      <span class="footer__voce">
-        <span class="footer__chiave">Lunedì – Venerdì</span>
-        <span class="footer__valore">8:00 – 16:00</span>
-      </span>
-      <span class="footer__sep">·</span>
-      <span class="footer__voce">
-        <span class="footer__chiave">Pausa estiva</span>
-        <span class="footer__valore">5 giu – 13 set</span>
-      </span>
-    </div>
-    <div class="footer__firma">
-      A cura di <strong>Andrea Cerioli</strong> · Animatore Digitale · Sacra Famiglia, Orzinuovi
-    </div>
-  </footer>
-
 </main>
-
 
 </div>
 <script>
