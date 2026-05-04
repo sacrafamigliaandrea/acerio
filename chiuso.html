@@ -583,13 +583,19 @@ body{
     const c = calcolaChiusura(now);
 
     if (!c) {
-      conto.textContent = 'aperto ora';
-      setTimeout(tick, 60000);
+      // Portale aperto: redirect automatico alla home, perché siamo
+      // su /chiuso.html e l'utente vuole entrare nel portale
+      conto.textContent = 'aperto ora · apertura in corso';
+      window.location.replace('/');
       return;
     }
 
     conto.textContent = fmtTempo(c.fine - now);
-    setTimeout(tick, 30000);
+    // Tick più frequente quando manca poco all'apertura,
+    // così non ci sono ritardi visibili allo scoccare dell'orario
+    const msAlAprire = c.fine - now;
+    const intervallo = msAlAprire < 5 * 60 * 1000 ? 5000 : 30000;
+    setTimeout(tick, intervallo);
   }
   tick();
 
