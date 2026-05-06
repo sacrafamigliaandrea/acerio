@@ -1242,5 +1242,399 @@
         }
     </script>
 <script src="dpia-badges.js" defer></script>
+
+<!-- ============================================================
+     REGISTRO LEZIONI — modal di tracciamento (v2 con griglia classi)
+     ============================================================ -->
+<style>
+  .reg-backdrop{
+    position:fixed; inset:0;
+    background:rgba(13, 35, 26, .55);
+    backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center;
+    z-index:9999;
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    padding:12px;
+  }
+  .reg-backdrop.show{display:flex}
+  .reg-modal{
+    background:#fff;
+    width:min(94vw, 540px);
+    border-radius:14px;
+    padding:24px 26px 22px;
+    box-shadow:0 18px 48px rgba(13,35,26,.35);
+    border-top:4px solid #1B6D3F;
+    max-height:96vh; overflow-y:auto;
+  }
+  .reg-head{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:12px; margin-bottom:14px;
+  }
+  .reg-head .reg-eyebrow{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:#1B6D3F; font-weight:600; margin-bottom:3px;
+  }
+  .reg-head .reg-app-title{
+    font-size:20px; font-weight:600; color:#0d231a; line-height:1.2;
+    margin:0;
+  }
+  .reg-datetime{
+    text-align:right; color:#536b5f; font-size:12px; line-height:1.5;
+    padding-top:2px; flex-shrink:0;
+  }
+  .reg-datetime strong{color:#0d231a}
+
+  .reg-pickerlabel{
+    font-size:12px; color:#536b5f; margin-bottom:8px; font-weight:500;
+  }
+  .reg-cols{
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    margin-bottom:14px;
+  }
+  .reg-coltitle{
+    font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:700; padding:0 0 6px 4px; margin-bottom:8px;
+    border-bottom:1.5px solid;
+  }
+  .reg-coltitle.prim{color:#a65a18; border-color:#fff1e0}
+  .reg-coltitle.sec{color:#1E4A8A; border-color:#e3eef9}
+
+  .reg-grid{display:grid; gap:6px}
+  .reg-grid.prim{grid-template-columns:1fr 1fr}
+  .reg-grid.sec{grid-template-columns:1fr 1fr 1fr}
+
+  .reg-cls{
+    color:#fff; border:2px solid transparent; border-radius:8px;
+    padding:10px 0; font-size:14px; font-weight:600;
+    font-family:inherit; cursor:pointer; transition:transform .08s, box-shadow .12s;
+    text-align:center; user-select:none;
+  }
+  .reg-cls:hover{transform:translateY(-1px)}
+  .reg-cls:active{transform:translateY(0)}
+  .reg-cls.prim{background:#EE7C00}
+  .reg-cls.sec{background:#1E4A8A}
+
+  .reg-cls.selected{
+    border:3px solid #1B6D3F;
+    box-shadow:0 0 0 2px rgba(27,109,63,.18);
+    padding:9px 0; font-weight:700;
+  }
+  .reg-cls .check{display:none; margin-left:4px}
+  .reg-cls.selected .check{display:inline}
+
+  .reg-status{
+    font-size:13px; color:#0d231a; padding:10px 14px;
+    background:#e8efe9; border-radius:8px; margin-bottom:14px;
+    border-left:3px solid #1B6D3F;
+  }
+  .reg-status.warn{
+    background:#fdf6f2; border-left-color:#c8784f; color:#0d231a;
+  }
+  .reg-status .meta{color:#536b5f; font-size:12px}
+  .reg-status.warn .meta{color:#a65a18}
+
+  .reg-actions{
+    display:flex; gap:10px; justify-content:flex-end;
+  }
+  .reg-btn{
+    padding:11px 20px; border:none; border-radius:8px;
+    font-size:14px; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:all .15s;
+  }
+  .reg-btn-cancel{background:#f3f5f4; color:#536b5f}
+  .reg-btn-cancel:hover{background:#e8efe9}
+  .reg-btn-confirm{background:#1B6D3F; color:#fff}
+  .reg-btn-confirm:hover{background:#155832}
+  .reg-btn-confirm:disabled{
+    background:#c8d4cc; cursor:not-allowed;
+  }
+
+  .reg-toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:#1B6D3F; color:#fff; padding:12px 22px; border-radius:8px;
+    font-family:'IBM Plex Sans', system-ui, sans-serif; font-weight:500;
+    box-shadow:0 8px 24px rgba(13,35,26,.25);
+    opacity:0; transition:opacity .25s; z-index:10000; pointer-events:none;
+  }
+  .reg-toast.show{opacity:1}
+
+  @media (max-width:520px){
+    .reg-modal{padding:20px 18px}
+    .reg-cols{grid-template-columns:1fr; gap:12px}
+    .reg-head .reg-app-title{font-size:18px}
+  }
+</style>
+
+<div class="reg-backdrop" id="regBackdrop" role="dialog" aria-modal="true" aria-labelledby="regAppTitle">
+  <div class="reg-modal">
+    <div class="reg-head">
+      <div>
+        <div class="reg-eyebrow">Registra lezione</div>
+        <p class="reg-app-title" id="regAppTitle">—</p>
+      </div>
+      <div class="reg-datetime">
+        <div id="regDate">—</div>
+        <div><strong id="regTime">—</strong></div>
+      </div>
+    </div>
+
+    <div class="reg-pickerlabel">Seleziona la classe</div>
+
+    <div class="reg-cols">
+      <div>
+        <div class="reg-coltitle prim">Primaria</div>
+        <div class="reg-grid prim" id="regGridPrim"></div>
+      </div>
+      <div>
+        <div class="reg-coltitle sec">Secondaria</div>
+        <div class="reg-grid sec" id="regGridSec"></div>
+      </div>
+    </div>
+
+    <div class="reg-status" id="regStatus">
+      Seleziona una classe per continuare
+    </div>
+
+    <div class="reg-actions">
+      <button class="reg-btn reg-btn-cancel" id="regCancel">Annulla</button>
+      <button class="reg-btn reg-btn-confirm" id="regConfirm" disabled>Conferma e apri</button>
+    </div>
+  </div>
+</div>
+<div class="reg-toast" id="regToast">Registrato</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const REGISTRO_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIxvpNEQnOr-TQTqzMycue8D8BN2Ths81ewTjAG7junkAeDhd26mBHsPlc5S3c-hE/exec';
+
+  // Orario fisso settimanale (1=Lun ... 5=Ven)
+  const ORARIO = {
+    1: [
+      { from:'08:00', to:'09:05', id:'SEC_1B' },
+      { from:'09:05', to:'09:55', id:'SEC_3A' },
+      { from:'09:55', to:'11:00', id:'SEC_2C' },
+      { from:'11:00', to:'11:50', id:'PRIM_2A' },
+      { from:'11:50', to:'13:00', id:'PRIM_2B' }
+    ],
+    2: [
+      { from:'08:00', to:'09:05', id:'SEC_1C' },
+      { from:'09:05', to:'09:55', id:'SEC_2A' },
+      { from:'09:55', to:'11:00', id:'SEC_2B' },
+      { from:'11:00', to:'11:50', id:'PRIM_1B' },
+      { from:'11:50', to:'13:00', id:'PRIM_1A' }
+    ],
+    3: [
+      { from:'08:00', to:'09:05', id:'PRIM_5A' },
+      { from:'09:05', to:'09:55', id:'SEC_3C' },
+      { from:'09:55', to:'11:00', id:'PRIM_5B' },
+      { from:'11:00', to:'11:50', id:'SEC_1A' },
+      { from:'11:50', to:'13:00', id:'SEC_3B' }
+    ],
+    4: [
+      { from:'08:00', to:'09:55', id:'PRIM_4A' },
+      { from:'09:55', to:'11:00', id:'PRIM_4B' }
+    ],
+    5: [
+      { from:'08:00', to:'09:55', id:'PRIM_3A' },
+      { from:'09:55', to:'11:00', id:'PRIM_3B' }
+    ]
+  };
+
+  const PRIMARIA = ['1A','1B','2A','2B','3A','3B','4A','4B','5A','5B'];
+  const SECONDARIA = ['1A','1B','1C','2A','2B','2C','3A','3B','3C'];
+  const GIORNI_LABEL = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtDate(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function fmtTime(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function fmtDateLabel(d){
+    return GIORNI_LABEL[d.getDay()]+' '+pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();
+  }
+  function timeToMin(hhmm){ const [h,m] = hhmm.split(':').map(Number); return h*60+m; }
+
+  function classeFromNow(d){
+    const giorno = d.getDay();
+    const oraMin = d.getHours()*60 + d.getMinutes();
+    const slots = ORARIO[giorno];
+    if (!slots) return null;
+    for (const s of slots){
+      if (oraMin >= timeToMin(s.from) && oraMin < timeToMin(s.to)) return s.id;
+    }
+    return null;
+  }
+
+  function classeIsInOrario(id, dayOfWeek){
+    const slots = ORARIO[dayOfWeek] || [];
+    return slots.some(s => s.id === id);
+  }
+
+  function getOrarioSlot(id, dayOfWeek){
+    const slots = ORARIO[dayOfWeek] || [];
+    return slots.find(s => s.id === id);
+  }
+
+  function classeLabel(id){
+    if (!id) return '';
+    const sec = id.startsWith('SEC_');
+    return id.split('_')[1] + ' ' + (sec ? 'Secondaria' : 'Primaria');
+  }
+
+  // Costruzione griglie classi (una sola volta)
+  function buildGrids(){
+    const gPrim = document.getElementById('regGridPrim');
+    const gSec  = document.getElementById('regGridSec');
+    gPrim.innerHTML = ''; gSec.innerHTML = '';
+    PRIMARIA.forEach(c => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'reg-cls prim';
+      b.setAttribute('data-id', 'PRIM_'+c);
+      b.innerHTML = '<span class="lbl">'+c+'</span><span class="check">✓</span>';
+      b.addEventListener('click', () => selectClasse('PRIM_'+c));
+      gPrim.appendChild(b);
+    });
+    SECONDARIA.forEach(c => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'reg-cls sec';
+      b.setAttribute('data-id', 'SEC_'+c);
+      b.innerHTML = '<span class="lbl">'+c+'</span><span class="check">✓</span>';
+      b.addEventListener('click', () => selectClasse('SEC_'+c));
+      gSec.appendChild(b);
+    });
+  }
+  buildGrids();
+
+  let pendingUrl = null;
+  let pendingTitle = null;
+  let pendingDate = null;
+  let selectedId = null;
+
+  function selectClasse(id){
+    selectedId = id;
+    document.querySelectorAll('.reg-cls').forEach(b => {
+      b.classList.toggle('selected', b.getAttribute('data-id') === id);
+    });
+    // Aggiorno status
+    const status = document.getElementById('regStatus');
+    const dow = pendingDate ? pendingDate.getDay() : new Date().getDay();
+    const inOrario = classeIsInOrario(id, dow);
+    const slot = inOrario ? getOrarioSlot(id, dow) : null;
+    if (inOrario && slot){
+      status.classList.remove('warn');
+      status.innerHTML = 'Selezionata: <strong>'+classeLabel(id)+'</strong> '+
+        '<span class="meta">(da orario di '+GIORNI_LABEL[dow]+' '+slot.from+'–'+slot.to+')</span>';
+    } else {
+      status.classList.add('warn');
+      status.innerHTML = 'Selezionata: <strong>'+classeLabel(id)+'</strong> '+
+        '<span class="meta">(diversa dall\'orario — sostituzione?)</span>';
+    }
+    document.getElementById('regConfirm').disabled = false;
+  }
+
+  function extractTitle(a){
+    const h = a.querySelector('h1,h2,h3,h4,h5,strong,b,.title,.card-title');
+    if (h && h.innerText.trim()) return h.innerText.trim();
+    const txt = (a.innerText || a.textContent || '').trim();
+    return txt.split('\n')[0].replace(/→\s*$/,'').trim() || 'Senza titolo';
+  }
+
+  function logSession(payload){
+    const qs = Object.keys(payload).map(k =>
+      encodeURIComponent(k)+'='+encodeURIComponent(payload[k]||'')
+    ).join('&');
+    const img = new Image();
+    img.src = REGISTRO_ENDPOINT + '?action=log&' + qs;
+  }
+
+  function toast(msg){
+    const t = document.getElementById('regToast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2000);
+  }
+
+  function openModal(a, href){
+    const now = new Date();
+    pendingUrl = href;
+    pendingTitle = extractTitle(a);
+    pendingDate = now;
+
+    document.getElementById('regAppTitle').textContent = pendingTitle;
+    document.getElementById('regDate').textContent = fmtDateLabel(now);
+    document.getElementById('regTime').textContent = fmtTime(now);
+
+    // Reset selezione
+    selectedId = null;
+    document.querySelectorAll('.reg-cls').forEach(b => b.classList.remove('selected'));
+    document.getElementById('regConfirm').disabled = true;
+    document.getElementById('regStatus').classList.remove('warn');
+    document.getElementById('regStatus').innerHTML = 'Seleziona una classe per continuare';
+
+    // Pre-seleziona da orario (se applicabile)
+    const auto = classeFromNow(now);
+    if (auto) selectClasse(auto);
+
+    document.getElementById('regBackdrop').classList.add('show');
+  }
+
+  function closeModal(){
+    document.getElementById('regBackdrop').classList.remove('show');
+    pendingUrl = null; pendingTitle = null; pendingDate = null; selectedId = null;
+  }
+
+  // Intercetta i click su link a webapp esterne
+  document.body.addEventListener('click', function(e){
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href) return;
+    if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('javascript:')) return;
+    if (a.hasAttribute('data-no-track')) return;
+    let url;
+    try { url = new URL(href, location.href); } catch(_){ return; }
+    if (url.hostname === location.hostname) return;
+    e.preventDefault();
+    openModal(a, url.href);
+  });
+
+  // Conferma → log + apertura
+  document.getElementById('regConfirm').addEventListener('click', function(){
+    if (!pendingUrl || !selectedId) return;
+    const now = new Date();
+    let host = '';
+    try { host = new URL(pendingUrl).hostname; } catch(_){}
+
+    logSession({
+      data: fmtDate(now),
+      ora: fmtTime(now),
+      giorno: GIORNI_LABEL[now.getDay()],
+      classe_id: selectedId,
+      classe_label: classeLabel(selectedId),
+      webapp_titolo: pendingTitle,
+      webapp_url: pendingUrl,
+      webapp_host: host
+    });
+
+    const url = pendingUrl;
+    closeModal();
+    toast('Registrato — apro la webapp');
+    setTimeout(()=>window.open(url, '_blank', 'noopener'), 150);
+  });
+
+  document.getElementById('regCancel').addEventListener('click', closeModal);
+  document.getElementById('regBackdrop').addEventListener('click', function(e){
+    if (e.target.id === 'regBackdrop') closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && document.getElementById('regBackdrop').classList.contains('show')) closeModal();
+  });
+})();
+</script>
+<!-- ============================================================
+     REGISTRO LEZIONI — fine
+     ============================================================ -->
+
 </body>
 </html>
