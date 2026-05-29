@@ -22,7 +22,7 @@
   
   const URL_MAP = {
   "https://sondaggiostudenti.vercel.app": {
-    "cluster": "E",
+    "cluster": "D",
     "name": "TI ASCOLTO!"
   },
   "https://calibro.neocities.org": {
@@ -278,7 +278,7 @@
     "name": "Il Gioco delle Case"
   },
   "https://autovalutazione.neocities.org": {
-    "cluster": "E",
+    "cluster": "D",
     "name": "Autovalutazione Lezione"
   },
   "https://sacrafamiglia.neocities.org": {
