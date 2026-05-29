@@ -2,8 +2,8 @@
  * dpia-badges.js
  * Bollini di conformità GDPR/AI Act per il portale Acerio (acerio.vercel.app)
  * 
- * Generato automaticamente da DPIA Studio il 2026-04-30
- * 101 app interne + 0 servizi terzi
+ * Generato automaticamente da DPIA Studio il 2026-05-29
+ * 108 app interne + 0 servizi terzi
  * 
  * Ogni link nel portale che corrisponde a un'app classificata riceve un piccolo
  * badge colorato accanto al nome, indicante il cluster di rischio.
@@ -269,10 +269,6 @@
     "cluster": "D",
     "name": "Laboratorio Scientifico"
   },
-  "https://sintesiproteica.vercel.app": {
-    "cluster": "D",
-    "name": "Sintesi Proteica"
-  },
   "https://100anni.neocities.org": {
     "cluster": "D",
     "name": "100 Anni di Storia in Musica"
@@ -332,10 +328,6 @@
   "https://profemon.neocities.org": {
     "cluster": "D",
     "name": "Profemon"
-  },
-  "https://harrypotter-1.vercel.app": {
-    "cluster": "D",
-    "name": "Harry Potter e la Pietra Filosofale"
   },
   "https://harrypotter-2.vercel.app": {
     "cluster": "D",
@@ -420,6 +412,42 @@
   "https://acerio.vercel.app/scuolafutura.html": {
     "cluster": "D",
     "name": "Percorsi Scuola Futura"
+  },
+  "https://dizionario-musicale.vercel.app": {
+    "cluster": "D",
+    "name": "Vocabolario d'Autore"
+  },
+  "https://ciparisso.vercel.app": {
+    "cluster": "D",
+    "name": "Il Mito di Ciparisso"
+  },
+  "https://lost-in-translation-phi.vercel.app": {
+    "cluster": "D",
+    "name": "Lost in Translation"
+  },
+  "https://la-macchina-per-fare-i-compiti.vercel.app": {
+    "cluster": "D",
+    "name": "La Macchina per Fare i Compiti"
+  },
+  "https://euro-capitali.vercel.app": {
+    "cluster": "D",
+    "name": "Euro Capitali"
+  },
+  "https://feedback-fine-anno-scolastico.vercel.app": {
+    "cluster": "D",
+    "name": "FINE ANNO\n                    autovalutazione"
+  },
+  "https://bottega-delle-app.vercel.app": {
+    "cluster": "D",
+    "name": "La Bottega delle App"
+  },
+  "https://family-dash-two.vercel.app": {
+    "cluster": "D",
+    "name": "FamilyDash"
+  },
+  "https://dopamina-loop.vercel.app": {
+    "cluster": "D",
+    "name": "Mystery Drop"
   }
 };
   
@@ -984,7 +1012,7 @@
     
     const footer = document.createElement('div');
     footer.className = 'dpia-legend-footer';
-    footer.textContent = 'Aggiornato al 2026-04-30 — ' + Object.keys(URL_MAP).length + ' applicazioni';
+    footer.textContent = 'Aggiornato al 2026-05-29 — ' + Object.keys(URL_MAP).length + ' applicazioni';
     legend.appendChild(footer);
     
     document.body.appendChild(toggle);
