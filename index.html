@@ -27,6 +27,7 @@
             --c-sport: #7a8a4a; --c-sport-bg: #f5f6ef; --c-sport-light: #e8eadb;
             --c-biblioteca: #8b6914; --c-biblioteca-bg: #fef9ee; --c-biblioteca-light: #fdf0d5;
             --c-esame: #b45309; --c-esame-bg: #fffbeb; --c-esame-light: #fef3c7;
+            --c-coding: #355070; --c-coding-bg: #eef2f7; --c-coding-light: #d8e2ee;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
@@ -118,15 +119,18 @@
         .search-count { background: var(--bg); padding: .45rem .9rem; border-radius: 50px; font-size: .75rem; font-weight: 800; color: var(--text-medium); white-space: nowrap; }
 
         /* ═══ CHIPS ═══ */
-        .filters { max-width: 1200px; margin: 1.25rem auto 0; padding: 0 2rem; display: flex; gap: .5rem; flex-wrap: wrap; animation: fadeUp .7s cubic-bezier(.16,1,.3,1) .5s both; }
+        .filters { position: sticky; top: 0; z-index: 50; max-width: 100%; margin: 1.25rem auto 0; padding: .6rem 2rem; display: flex; justify-content: center; gap: .5rem; flex-wrap: wrap; animation: fadeUp .7s cubic-bezier(.16,1,.3,1) .5s both; background: rgba(244,246,249,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid #e8ecf0; }
         .chip { padding: .45rem .95rem; border-radius: 50px; font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .3s cubic-bezier(.16,1,.3,1); user-select: none; border: 2px solid transparent; background: var(--bg-white); color: var(--text-medium); box-shadow: var(--shadow-soft); }
         .chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
         .chip.active { color: #fff; transform: translateY(-2px); }
         .chip[data-cat="all"].active { background: linear-gradient(135deg,#6b7c3e,#1a535c); }
         .chip[data-cat="cittadinanza"].active { background: var(--c-cittadinanza); }
         .chip[data-cat="scrittura"].active { background: var(--c-scrittura); }
+        .chip[data-cat="biblioteca"].active { background: var(--c-biblioteca); }
         .chip[data-cat="tech"].active { background: var(--c-tech); }
+        .chip[data-cat="coding"].active { background: var(--c-coding); }
         .chip[data-cat="scienze"].active { background: var(--c-scienze); }
+        .chip[data-cat="esame"].active { background: var(--c-esame); }
         .chip[data-cat="scuola"].active { background: var(--c-scuola); }
         .chip[data-cat="sport"].active { background: var(--c-sport); }
 
@@ -162,7 +166,7 @@
         .card-list li:hover { background: var(--card-color-bg); }
         .card-list a { display: flex; align-items: center; gap: .65rem; padding: .6rem .7rem; text-decoration: none; color: var(--text-medium); transition: all .25s ease; border-radius: var(--radius-xs); }
         .card-list a:hover { color: var(--card-color); }
-        .link-num { min-width: 22px; height: 22px; border-radius: 7px; background: var(--card-color); opacity: .2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-start; margin-top: .25rem; font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; color: #fff; transition: all .3s cubic-bezier(.175,.885,.32,1.275); }
+        .link-num { min-width: 22px; height: 22px; border-radius: 7px; background: var(--card-color); opacity: .85; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-start; margin-top: .25rem; font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; color: #fff; transition: all .3s cubic-bezier(.175,.885,.32,1.275); }
         .link-num::before { content: counter(app-num); }
         .card-list a:hover .link-num { opacity: 1; transform: scale(1.1); }
         .link-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
@@ -181,6 +185,7 @@
         .card[data-theme="sport"] { --card-color: var(--c-sport); --card-color-bg: var(--c-sport-bg); --card-color-light: var(--c-sport-light); }
         .card[data-theme="biblioteca"] { --card-color: var(--c-biblioteca); --card-color-bg: var(--c-biblioteca-bg); --card-color-light: var(--c-biblioteca-light); }
         .card[data-theme="esame"] { --card-color: var(--c-esame); --card-color-bg: var(--c-esame-bg); --card-color-light: var(--c-esame-light); }
+        .card[data-theme="coding"] { --card-color: var(--c-coding); --card-color-bg: var(--c-coding-bg); --card-color-light: var(--c-coding-light); }
 
         /* ═══ NO RESULTS ═══ */
         @keyframes wobble { 0%,100% { transform:rotate(0); } 25% { transform:rotate(-8deg); } 75% { transform:rotate(8deg); } }
@@ -229,7 +234,7 @@
                 </div>
             </div>
             <div class="hero-counters">
-                <div class="hero-stat"><span class="stat-num" data-target="105">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
+                <div class="hero-stat"><span class="stat-num" data-target="109">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="19">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
                 <div class="hero-stat hero-update"><span class="stat-num" id="dayNum"></span><span class="stat-label" id="dateLabel"></span></div>
@@ -261,6 +266,19 @@
         <a href="riservata.html" class="ql-glass ql-lock"><i class="ti ti-lock"></i></a>
         <button class="ql-search" id="searchToggle" onclick="this.classList.toggle('open');document.getElementById('searchBox').focus()"><i class="ti ti-search"></i></button>
         <input type="text" id="searchBox" class="ql-search-input" placeholder="Cerca..." oninput="filterCards(this.value)">
+    </div>
+
+    <div class="filters" id="filters">
+        <span class="chip active" data-cat="all" onclick="filterByCategory('all', this)">Tutte</span>
+        <span class="chip" data-cat="cittadinanza" onclick="filterByCategory('cittadinanza', this)">Cittadinanza</span>
+        <span class="chip" data-cat="scrittura" onclick="filterByCategory('scrittura', this)">Scrittura</span>
+        <span class="chip" data-cat="biblioteca" onclick="filterByCategory('biblioteca', this)">Biblioteca</span>
+        <span class="chip" data-cat="tech" onclick="filterByCategory('tech', this)">Informatica</span>
+        <span class="chip" data-cat="coding" onclick="filterByCategory('coding', this)">Coding</span>
+        <span class="chip" data-cat="scienze" onclick="filterByCategory('scienze', this)">Approfondimenti</span>
+        <span class="chip" data-cat="esame" onclick="filterByCategory('esame', this)">Esame</span>
+        <span class="chip" data-cat="scuola" onclick="filterByCategory('scuola', this)">Sacra Famiglia</span>
+        <span class="chip" data-cat="sport" onclick="filterByCategory('sport', this)">Sport e Giochi</span>
     </div>
 
     <main class="grid" id="grid">
@@ -530,7 +548,7 @@
 
         <!-- ══════ INFORMATICA & TECH ══════ -->
         <div class="card" data-theme="tech" data-category="tech">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-device-laptop"></i></div><div class="card-info"><div class="card-name">Informatica & Tech</div><span class="card-badge">16 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-device-laptop"></i></div><div class="card-info"><div class="card-name">Informatica & Tech</div><span class="card-badge">17 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://fakehunter.neocities.org/" target="_blank">
                     <span class="link-num"></span>
@@ -612,12 +630,34 @@
                     <span class="link-text"><span class="link-name">Cyber Security</span><span class="link-desc">Minacce digitali, difese e buone pratiche per navigare in sicurezza</span></span>
                     <span class="link-go">→</span>
                 </a></li>
+                <li><a href="https://cybersicurezza-figli-genitori.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Cybersicurezza Figli & Genitori</span><span class="link-desc">La sicurezza digitale si impara in famiglia: percorso per genitori e figli insieme</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+            </ul>
+        </div>
+
+        <!-- ══════ CODING ══════ -->
+        <div class="card" data-theme="coding" data-category="coding">
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-code"></i></div><div class="card-info"><div class="card-name">Coding</div><span class="card-badge">2 risorse</span></div></div>
+            <ul class="card-list">
+                <li><a href="https://controcorrente-lilac.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">ControCorrente</span><span class="link-desc">Sfide di logica e pensiero computazionale controintuitive</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://roccacifrata.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Rocca Cifrata</span><span class="link-desc">Crittografia per giovani menti: cifra e decifra messaggi segreti</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
             </ul>
         </div>
 
         <!-- ══════ APPROFONDIMENTI E RICERCHE ══════ -->
         <div class="card" data-theme="scienze" data-category="scienze">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-search"></i></div><div class="card-info"><div class="card-name">Approfondimenti e Ricerche</div><span class="card-badge">15 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-search"></i></div><div class="card-info"><div class="card-name">Approfondimenti e Ricerche</div><span class="card-badge">16 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://geografiamaps.neocities.org/" target="_blank">
                     <span class="link-num"></span>
@@ -692,6 +732,11 @@
                 <li><a href="https://ai-video-azure.vercel.app/" target="_blank">
                     <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">AI Video</span><span class="link-desc">Quando l'intelligenza artificiale crea video: capire, riconoscere, valutare</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://storia-new.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Viaggio nella Storia</span><span class="link-desc">Percorso interattivo attraverso epoche ed eventi storici</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
@@ -1264,6 +1309,13 @@
                 }
             });
         })();
+        /* deep-link: index.html#coding apre già filtrato sulla categoria */
+        (function() {
+            var cat = (location.hash || '').replace('#', '');
+            if (!cat) return;
+            var chip = document.querySelector('.filters .chip[data-cat="' + cat + '"]');
+            if (chip) filterByCategory(cat, chip);
+        })();
         /* count-up animation */
         document.querySelectorAll('.stat-num[data-target]').forEach(function(el, idx) {
             var target = parseInt(el.dataset.target);
@@ -1289,8 +1341,25 @@
         })();
     </script>
     <script>
+        function filterByCategory(cat, chip) {
+            /* il filtro categoria azzera la ricerca testuale */
+            var box = document.getElementById('searchBox');
+            if (box) box.value = '';
+            document.querySelectorAll('.filters .chip').forEach(function(c) { c.classList.remove('active'); });
+            if (chip) chip.classList.add('active');
+            document.querySelectorAll('.card').forEach(function(card) {
+                var show = (cat === 'all') || (card.dataset.category === cat);
+                card.style.display = show ? '' : 'none';
+                /* ripristina eventuali li nascosti da una ricerca precedente */
+                card.querySelectorAll('.card-list li').forEach(function(li) { li.style.display = ''; });
+            });
+        }
         function filterCards(q) {
             q = q.toLowerCase().trim();
+            /* la ricerca testuale riporta i chip su "Tutte" */
+            document.querySelectorAll('.filters .chip').forEach(function(c) {
+                c.classList.toggle('active', c.dataset.cat === 'all');
+            });
             document.querySelectorAll('.card').forEach(card => {
                 var items = card.querySelectorAll('.card-list li');
                 var hasMatch = false;
