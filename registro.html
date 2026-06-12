@@ -244,6 +244,34 @@
 
   @media (max-width:520px){ .rc-grid { grid-template-columns:1fr; } .rc-threshold { margin-left:0; } }
 
+        /* ===== PANNELLO GESTIONE ORARIO ===== */
+        .orario-panel { background:var(--bg-white); border-radius:var(--radius-sm); box-shadow:var(--shadow-soft); margin-bottom:1.5rem; overflow:hidden; }
+        .orario-head { display:flex; align-items:center; gap:.6rem; padding:1rem 1.3rem; cursor:pointer; user-select:none; }
+        .orario-head .ti-calendar-cog { color:var(--accent); font-size:1.2rem; }
+        .orario-head .op-title { font-family:'DM Sans',sans-serif; font-weight:800; font-size:1.05rem; }
+        .orario-head .op-chev { margin-left:auto; transition:transform .3s; color:var(--text-light); }
+        .orario-panel.open .op-chev { transform:rotate(180deg); }
+        .orario-body { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.16,1,.3,1); }
+        .orario-panel.open .orario-body { max-height:3000px; }
+        .orario-inner { padding:0 1.3rem 1.3rem; }
+        .op-days { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+        .op-day { border:1.5px solid #e8ecf0; border-radius:12px; padding:.8rem; }
+        .op-day-name { font-family:'DM Sans',sans-serif; font-weight:800; font-size:.85rem; color:var(--accent); margin-bottom:.6rem; text-transform:uppercase; letter-spacing:.03em; }
+        .op-slot { display:flex; align-items:center; gap:.35rem; margin-bottom:.45rem; }
+        .op-slot input[type=time] { width:72px; border:1.5px solid #e2e8f0; border-radius:7px; padding:.25rem .35rem; font-size:.72rem; font-family:'Nunito'; }
+        .op-slot select { flex:1; min-width:0; border:1.5px solid #e2e8f0; border-radius:7px; padding:.25rem .3rem; font-size:.72rem; font-family:'Nunito'; background:#fff; }
+        .op-slot .op-del { border:none; background:#fdeaea; color:#b45309; border-radius:6px; width:24px; height:24px; cursor:pointer; flex-shrink:0; font-weight:800; display:flex; align-items:center; justify-content:center; }
+        .op-slot .op-del:hover { background:#f8d7d7; }
+        .op-add { width:100%; border:1.5px dashed #c8ced6; background:transparent; color:var(--text-medium); border-radius:8px; padding:.4rem; font-size:.72rem; font-weight:700; cursor:pointer; font-family:'Nunito'; margin-top:.2rem; }
+        .op-add:hover { border-color:var(--accent); color:var(--accent); }
+        .op-actions { display:flex; align-items:center; gap:.8rem; margin-top:1.2rem; flex-wrap:wrap; }
+        .op-save { border:none; background:var(--accent); color:#fff; border-radius:10px; padding:.6rem 1.4rem; font-family:'DM Sans',sans-serif; font-weight:800; font-size:.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; }
+        .op-save:hover { background:#4a5c2e; }
+        .op-save:disabled { opacity:.5; cursor:default; }
+        .op-msg { font-size:.8rem; font-weight:700; }
+        .op-msg.ok { color:#15803d; } .op-msg.err { color:#b45309; }
+        .op-reload { border:none; background:var(--accent-light); color:var(--accent); border-radius:10px; padding:.6rem 1rem; font-family:'Nunito'; font-weight:700; font-size:.8rem; cursor:pointer; }
+
     </style>
 </head>
 <body>
@@ -279,6 +307,24 @@
     <!-- ═══ CONTENT (decrypted on login) ═══ -->
     <!-- ZONA CARD ATTIVITÀ PER CLASSE (visibile dopo login) -->
     <div class="content-wrap" id="cardsWrap">
+      <div class="orario-panel" id="orarioPanel">
+        <div class="orario-head" id="orarioHead">
+          <i class="ti ti-calendar-cog"></i>
+          <span class="op-title">Gestione orario settimanale</span>
+          <i class="ti ti-chevron-down op-chev"></i>
+        </div>
+        <div class="orario-body">
+          <div class="orario-inner">
+            <div class="op-days" id="opDays"></div>
+            <div class="op-actions">
+              <button class="op-save" id="opSave"><i class="ti ti-device-floppy"></i> Salva orario sul Sheet</button>
+              <button class="op-reload" id="opReload">Ricarica</button>
+              <span class="op-msg" id="opMsg"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="rc-toolbar">
         <div class="rc-tt"><i class="ti ti-list-check"></i> Attività svolte per classe</div>
         <button class="rc-refresh" id="rcRefresh"><i class="ti ti-refresh"></i> Aggiorna dati</button>
@@ -494,7 +540,114 @@
     }); }
     if (rf && !rf._bound){ rf._bound = true; rf.addEventListener('click', loadData); }
     loadData();
+    orarioInit();
   };
+
+  /* ===== PANNELLO ORARIO ===== */
+  var ORARIO_TOKEN = 'CAMBIA_QUESTO_TOKEN_2026'; // deve combaciare con quello dell'Apps Script
+  var GIORNI = { '1':'Lunedì', '2':'Martedì', '3':'Mercoledì', '4':'Giovedì', '5':'Venerdì' };
+  var orarioData = { '1':[], '2':[], '3':[], '4':[], '5':[] };
+
+  function classeOptions(selected){
+    var html = '<option value="">— classe —</option>';
+    PRIMARIA.forEach(function(c){ var id='PRIM_'+c; html += '<option value="'+id+'"'+(id===selected?' selected':'')+'>'+c+' Primaria</option>'; });
+    SECONDARIA.forEach(function(c){ var id='SEC_'+c; html += '<option value="'+id+'"'+(id===selected?' selected':'')+'>'+c+' Secondaria</option>'; });
+    return html;
+  }
+
+  function renderOrario(){
+    var wrap = document.getElementById('opDays');
+    var html = '';
+    Object.keys(GIORNI).forEach(function(g){
+      html += '<div class="op-day" data-day="'+g+'"><div class="op-day-name">'+GIORNI[g]+'</div>';
+      (orarioData[g]||[]).forEach(function(slot, i){
+        html += '<div class="op-slot">';
+        html += '<input type="time" class="op-from" value="'+(slot.from||'')+'">';
+        html += '<input type="time" class="op-to" value="'+(slot.to||'')+'">';
+        html += '<select class="op-cls">'+classeOptions(slot.id)+'</select>';
+        html += '<button class="op-del" data-day="'+g+'" data-i="'+i+'" title="Rimuovi">&times;</button>';
+        html += '</div>';
+      });
+      html += '<button class="op-add" data-day="'+g+'">+ aggiungi fascia</button>';
+      html += '</div>';
+    });
+    wrap.innerHTML = html;
+    bindOrarioEvents();
+  }
+
+  function syncFromUI(){
+    document.querySelectorAll('#opDays .op-day').forEach(function(dayEl){
+      var g = dayEl.dataset.day;
+      var slots = [];
+      dayEl.querySelectorAll('.op-slot').forEach(function(s){
+        var from = s.querySelector('.op-from').value;
+        var to = s.querySelector('.op-to').value;
+        var id = s.querySelector('.op-cls').value;
+        if (id) slots.push({ from:from, to:to, id:id });
+      });
+      orarioData[g] = slots;
+    });
+  }
+
+  function bindOrarioEvents(){
+    document.querySelectorAll('#opDays .op-add').forEach(function(b){
+      b.addEventListener('click', function(){ syncFromUI(); orarioData[this.dataset.day].push({from:'08:00',to:'09:00',id:''}); renderOrario(); });
+    });
+    document.querySelectorAll('#opDays .op-del').forEach(function(b){
+      b.addEventListener('click', function(){ syncFromUI(); orarioData[this.dataset.day].splice(parseInt(this.dataset.i,10),1); renderOrario(); });
+    });
+  }
+
+  function orarioLoad(){
+    var msg = document.getElementById('opMsg');
+    msg.className='op-msg'; msg.textContent='Caricamento…';
+    var cb = 'orCb_'+Date.now();
+    var s = document.createElement('script');
+    window[cb] = function(resp){
+      try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+      if(s.parentNode) s.parentNode.removeChild(s);
+      if(!resp || resp.ok===false){ msg.className='op-msg err'; msg.textContent='Errore caricamento orario'; return; }
+      orarioData = { '1':[],'2':[],'3':[],'4':[],'5':[] };
+      var o = resp.orario || {};
+      Object.keys(o).forEach(function(g){ if(orarioData[g]!==undefined) orarioData[g]=o[g]; });
+      renderOrario();
+      msg.className='op-msg'; msg.textContent='';
+    };
+    s.src = REGISTRO_ENDPOINT + '?action=getOrario&callback='+cb+'&_='+Date.now();
+    s.onerror = function(){ msg.className='op-msg err'; msg.textContent='Impossibile contattare il registro'; };
+    document.body.appendChild(s);
+  }
+
+  function orarioSave(){
+    syncFromUI();
+    var msg = document.getElementById('opMsg');
+    var btn = document.getElementById('opSave');
+    btn.disabled = true; msg.className='op-msg'; msg.textContent='Salvataggio…';
+    var cb = 'orSet_'+Date.now();
+    var s = document.createElement('script');
+    window[cb] = function(resp){
+      try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+      if(s.parentNode) s.parentNode.removeChild(s);
+      btn.disabled = false;
+      if(resp && resp.ok){ msg.className='op-msg ok'; msg.textContent='Orario salvato sul Sheet ✓'; }
+      else { msg.className='op-msg err'; msg.textContent='Errore: '+((resp&&resp.error)||'salvataggio fallito'); }
+    };
+    var payload = encodeURIComponent(JSON.stringify(orarioData));
+    s.src = REGISTRO_ENDPOINT + '?action=setOrario&token='+encodeURIComponent(ORARIO_TOKEN)+'&payload='+payload+'&callback='+cb+'&_='+Date.now();
+    s.onerror = function(){ btn.disabled=false; msg.className='op-msg err'; msg.textContent='Impossibile contattare il registro'; };
+    document.body.appendChild(s);
+  }
+
+  function orarioInit(){
+    var head = document.getElementById('orarioHead');
+    var panel = document.getElementById('orarioPanel');
+    if (head && !head._bound){ head._bound=true; head.addEventListener('click', function(){ panel.classList.toggle('open'); }); }
+    var save = document.getElementById('opSave');
+    if (save && !save._bound){ save._bound=true; save.addEventListener('click', orarioSave); }
+    var rel = document.getElementById('opReload');
+    if (rel && !rel._bound){ rel._bound=true; rel.addEventListener('click', orarioLoad); }
+    orarioLoad();
+  }
 })();
 </script>
 </body>

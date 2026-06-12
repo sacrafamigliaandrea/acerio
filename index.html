@@ -1540,8 +1540,9 @@
 
   const REGISTRO_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIxvpNEQnOr-TQTqzMycue8D8BN2Ths81ewTjAG7junkAeDhd26mBHsPlc5S3c-hE/exec';
 
-  // Orario fisso settimanale (1=Lun ... 5=Ven)
-  const ORARIO = {
+  // Orario fisso settimanale (1=Lun ... 5=Ven) — FALLBACK locale.
+  // All'avvio viene sovrascritto da quello gestito sul Sheet (vedi loadOrarioRemoto).
+  let ORARIO = {
     1: [
       { from:'08:00', to:'09:05', id:'SEC_1B' },
       { from:'09:05', to:'09:55', id:'SEC_3A' },
@@ -1595,6 +1596,28 @@
     }
     return null;
   }
+
+  // Carica l'orario gestito sul Sheet (pannello in registro.html) e sovrascrive
+  // il fallback locale. Se offline o errore, resta valido l'ORARIO hardcoded.
+  (function loadOrarioRemoto(){
+    try {
+      var cb = 'orarioCb_' + Date.now();
+      var s = document.createElement('script');
+      window[cb] = function(resp){
+        try { delete window[cb]; } catch(e){ window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+        if (resp && resp.ok && resp.orario && Object.keys(resp.orario).length){
+          var o = {};
+          // normalizzo le chiavi a numero (getDay() restituisce numeri)
+          Object.keys(resp.orario).forEach(function(g){ o[parseInt(g,10)] = resp.orario[g]; });
+          ORARIO = o;
+        }
+      };
+      s.src = REGISTRO_ENDPOINT + '?action=getOrario&callback=' + cb + '&_=' + Date.now();
+      s.onerror = function(){ if (s.parentNode) s.parentNode.removeChild(s); }; // tiene il fallback
+      document.body.appendChild(s);
+    } catch(e){ /* fallback locale */ }
+  })();
 
   function classeIsInOrario(id, dayOfWeek){
     const slots = ORARIO[dayOfWeek] || [];
