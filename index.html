@@ -28,6 +28,7 @@
             --c-biblioteca: #8b6914; --c-biblioteca-bg: #fef9ee; --c-biblioteca-light: #fdf0d5;
             --c-esame: #b45309; --c-esame-bg: #fffbeb; --c-esame-light: #fef3c7;
             --c-coding: #355070; --c-coding-bg: #eef2f7; --c-coding-light: #d8e2ee;
+            --c-lezioni: #9a5b3f; --c-lezioni-bg: #f7efe9; --c-lezioni-light: #ecdccf;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
@@ -129,6 +130,7 @@
         .chip[data-cat="biblioteca"].active { background: var(--c-biblioteca); }
         .chip[data-cat="tech"].active { background: var(--c-tech); }
         .chip[data-cat="coding"].active { background: var(--c-coding); }
+        .chip[data-cat="lezioni"].active { background: var(--c-lezioni); }
         .chip[data-cat="scienze"].active { background: var(--c-scienze); }
         .chip[data-cat="esame"].active { background: var(--c-esame); }
         .chip[data-cat="scuola"].active { background: var(--c-scuola); }
@@ -177,6 +179,23 @@
         .link-go { margin-left: auto; font-size: .8rem; opacity: 0; transform: translateX(-6px); transition: all .25s ease; color: var(--card-color); flex-shrink: 0; align-self: center; }
         .card-list a:hover .link-go { opacity: 1; transform: translateX(0); }
 
+        /* ═══ MODALITÀ FILTRATA: card singola a tutta larghezza, app su più colonne ═══ */
+        .grid.solo-mode { grid-template-columns: 1fr; max-width: 1100px; }
+        .grid.solo-mode .card { animation: none; }
+        .grid.solo-mode .card-head { padding-bottom: 1rem; border-bottom: 1px solid var(--card-color-light, #eee); margin: 0 .65rem; }
+        .grid.solo-mode .card-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: .2rem .6rem;
+            padding-top: .8rem;
+        }
+        .grid.solo-mode .card-list li + li { margin-top: 0; }
+        .grid.solo-mode .link-num { width: 26px; min-width: 26px; height: 26px; font-size: .72rem; border-radius: 8px; }
+        .grid.solo-mode .link-name { font-size: .92rem; }
+        .grid.solo-mode .link-desc { font-size: .76rem; }
+        /* il pulsante PDF resta in cima, fuori dalla griglia delle app */
+        .grid.solo-mode .card-pdf-btn { margin-left: 1.05rem; }
+
         .card[data-theme="cittadinanza"] { --card-color: var(--c-cittadinanza); --card-color-bg: var(--c-cittadinanza-bg); --card-color-light: var(--c-cittadinanza-light); }
         .card[data-theme="scrittura"] { --card-color: var(--c-scrittura); --card-color-bg: var(--c-scrittura-bg); --card-color-light: var(--c-scrittura-light); }
         .card[data-theme="tech"] { --card-color: var(--c-tech); --card-color-bg: var(--c-tech-bg); --card-color-light: var(--c-tech-light); }
@@ -186,6 +205,7 @@
         .card[data-theme="biblioteca"] { --card-color: var(--c-biblioteca); --card-color-bg: var(--c-biblioteca-bg); --card-color-light: var(--c-biblioteca-light); }
         .card[data-theme="esame"] { --card-color: var(--c-esame); --card-color-bg: var(--c-esame-bg); --card-color-light: var(--c-esame-light); }
         .card[data-theme="coding"] { --card-color: var(--c-coding); --card-color-bg: var(--c-coding-bg); --card-color-light: var(--c-coding-light); }
+        .card[data-theme="lezioni"] { --card-color: var(--c-lezioni); --card-color-bg: var(--c-lezioni-bg); --card-color-light: var(--c-lezioni-light); }
 
         /* ═══ NO RESULTS ═══ */
         @keyframes wobble { 0%,100% { transform:rotate(0); } 25% { transform:rotate(-8deg); } 75% { transform:rotate(8deg); } }
@@ -234,7 +254,7 @@
                 </div>
             </div>
             <div class="hero-counters">
-                <div class="hero-stat"><span class="stat-num" data-target="109">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
+                <div class="hero-stat"><span class="stat-num" data-target="118">0</span><span class="stat-label">Web App<br>Studenti & Docenti</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="19">0</span><span class="stat-label">Strumenti<br>Area Riservata</span></div>
                 <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">Web App<br>Genitori</span></div>
                 <div class="hero-stat hero-update"><span class="stat-num" id="dayNum"></span><span class="stat-label" id="dateLabel"></span></div>
@@ -275,6 +295,7 @@
         <span class="chip" data-cat="biblioteca" onclick="filterByCategory('biblioteca', this)">Biblioteca</span>
         <span class="chip" data-cat="tech" onclick="filterByCategory('tech', this)">Informatica</span>
         <span class="chip" data-cat="coding" onclick="filterByCategory('coding', this)">Coding</span>
+        <span class="chip" data-cat="lezioni" onclick="filterByCategory('lezioni', this)">Lezioni</span>
         <span class="chip" data-cat="scienze" onclick="filterByCategory('scienze', this)">Approfondimenti</span>
         <span class="chip" data-cat="esame" onclick="filterByCategory('esame', this)">Esame</span>
         <span class="chip" data-cat="scuola" onclick="filterByCategory('scuola', this)">Sacra Famiglia</span>
@@ -640,7 +661,7 @@
 
         <!-- ══════ CODING ══════ -->
         <div class="card" data-theme="coding" data-category="coding">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-code"></i></div><div class="card-info"><div class="card-name">Coding</div><span class="card-badge">2 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-code"></i></div><div class="card-info"><div class="card-name">Coding</div><span class="card-badge">5 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://controcorrente-lilac.vercel.app/" target="_blank">
                     <span class="link-num"></span>
@@ -650,6 +671,58 @@
                 <li><a href="https://roccacifrata.vercel.app/" target="_blank">
                     <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Rocca Cifrata</span><span class="link-desc">Crittografia per giovani menti: cifra e decifra messaggi segreti</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://fontaniere-coding.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Il Fontaniere</span><span class="link-desc">Collega i tubi e porta l'acqua a destinazione: logica e sequenze</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://basket-sacrafamiglia.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Basket Coding</span><span class="link-desc">Programma i tiri e segna canestro: coordinate, angoli e istruzioni</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://pollice-verde-rho.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Pollice Verde</span><span class="link-desc">Coltiva il tuo orto digitale con cicli e condizioni di crescita</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+            </ul>
+        </div>
+
+        <!-- ══════ LEZIONI ══════ -->
+        <div class="card" data-theme="lezioni" data-category="lezioni">
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-school"></i></div><div class="card-info"><div class="card-name">Lezioni</div><span class="card-badge">6 risorse</span></div></div>
+            <ul class="card-list">
+                <li><a href="https://identit-digitale.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Identità Digitale</span><span class="link-desc">Chi siamo online: reputazione, tracce e cittadinanza digitale</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://anti-alibi.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Anti-Alibi</span><span class="link-desc">Smontare le scuse: responsabilità e scelte consapevoli</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://ipad-carta.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">iPad e Carta</span><span class="link-desc">Quando usare il digitale e quando la carta: scegliere lo strumento giusto</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://excel-basic-lesson.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Excel Basic</span><span class="link-desc">Primi passi nei fogli di calcolo: celle, formule e tabelle</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://magnifica-humanitas-nu.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Magnifica Humanitas</span><span class="link-desc">Il valore dell'umano nell'epoca delle macchine</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://ai-nuovo-mondo.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">AI, il Nuovo Mondo</span><span class="link-desc">Capire l'intelligenza artificiale: opportunità, limiti e responsabilità</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
@@ -1353,13 +1426,18 @@
                 /* ripristina eventuali li nascosti da una ricerca precedente */
                 card.querySelectorAll('.card-list li').forEach(function(li) { li.style.display = ''; });
             });
+            /* una sola categoria attiva → vista a griglia full-width; "Tutte" → mosaico */
+            var grid = document.getElementById('grid');
+            if (grid) grid.classList.toggle('solo-mode', cat !== 'all');
         }
         function filterCards(q) {
             q = q.toLowerCase().trim();
-            /* la ricerca testuale riporta i chip su "Tutte" */
+            /* la ricerca testuale riporta i chip su "Tutte" e torna al mosaico */
             document.querySelectorAll('.filters .chip').forEach(function(c) {
                 c.classList.toggle('active', c.dataset.cat === 'all');
             });
+            var grid = document.getElementById('grid');
+            if (grid) grid.classList.remove('solo-mode');
             document.querySelectorAll('.card').forEach(card => {
                 var items = card.querySelectorAll('.card-list li');
                 var hasMatch = false;
