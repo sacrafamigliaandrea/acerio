@@ -3,13 +3,30 @@
 // Apertura: Lun–Ven 8:00–16:00, fuso Europe/Rome (gestisce DST)
 // Chiusura estiva: dal 5 giugno (incluso) al 13 settembre (incluso)
 // Riapertura: 14 settembre
+//
+// GUARDIA HOSTNAME: il blocco orario si attiva solo sui deploy
+// elencati in HOSTNAMES_CON_BLOCCO_ORARIO. Sugli altri progetti
+// Vercel collegati allo stesso repo il middleware esce subito e
+// l'accesso resta libero h24, festivi e vacanze incluse.
 // =============================================================
+
+// ─── CONFIG HOSTNAME ──────────────────────────────────────────
+// Aggiungi/rimuovi domini qui per attivare/disattivare il blocco.
+// - acerio.vercel.app           → studenti production (blocco ATTIVO)
+// - acerionet.vercel.app        → studenti dev/prove (blocco DISATTIVO)
+// - andreacerioli-ad.vercel.app → docenti (blocco DISATTIVO)
+const HOSTNAMES_CON_BLOCCO_ORARIO = ['acerio.vercel.app'];
+// ──────────────────────────────────────────────────────────────
 
 export const config = {
   matcher: '/((?!chiuso\\.html|favicon\\.ico|robots\\.txt|_vercel|api).*)',
 };
 
 export default function middleware(request) {
+  // Guardia hostname: bypass silenzioso per i deploy non interessati
+  const host = request.headers.get('host') || '';
+  if (!HOSTNAMES_CON_BLOCCO_ORARIO.includes(host)) return;
+
   const now = new Date();
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Europe/Rome',

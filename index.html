@@ -1616,6 +1616,16 @@
 (function(){
   'use strict';
 
+  // ─── GUARDIA HOSTNAME ──────────────────────────────────────────
+  // Il registro accessi si installa solo sui deploy "studenti".
+  // Modifica questo array per attivare/disattivare il registro per dominio.
+  // - acerio.vercel.app       → studenti (production)
+  // - acerionet.vercel.app    → studenti (dev/prove)
+  // - andreacerioli-ad.vercel.app → docenti (registro disattivato)
+  const HOSTNAMES_CON_REGISTRO = ['acerio.vercel.app', 'acerionet.vercel.app'];
+  if (!HOSTNAMES_CON_REGISTRO.includes(location.hostname)) return;
+  // ───────────────────────────────────────────────────────────────
+
   const REGISTRO_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIxvpNEQnOr-TQTqzMycue8D8BN2Ths81ewTjAG7junkAeDhd26mBHsPlc5S3c-hE/exec';
 
   // Orario fisso settimanale (1=Lun ... 5=Ven) — FALLBACK locale.
