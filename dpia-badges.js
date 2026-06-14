@@ -2,8 +2,8 @@
  * dpia-badges.js
  * Bollini di conformità GDPR/AI Act per il portale Acerio (acerio.vercel.app)
  * 
- * Generato automaticamente da DPIA Studio il 2026-05-29
- * 108 app interne + 0 servizi terzi
+ * Generato automaticamente da DPIA Studio il 2026-06-14
+ * 126 app interne + 0 servizi terzi
  * 
  * Ogni link nel portale che corrisponde a un'app classificata riceve un piccolo
  * badge colorato accanto al nome, indicante il cluster di rischio.
@@ -448,6 +448,78 @@
   "https://dopamina-loop.vercel.app": {
     "cluster": "D",
     "name": "Mystery Drop"
+  },
+  "https://cyber-security-ex9b.vercel.app": {
+    "cluster": "D",
+    "name": "Cyber Security"
+  },
+  "https://cybersicurezza-figli-genitori.vercel.app": {
+    "cluster": "D",
+    "name": "Cybersicurezza Figli & Genitori"
+  },
+  "https://controcorrente-lilac.vercel.app": {
+    "cluster": "D",
+    "name": "ControCorrente"
+  },
+  "https://roccacifrata.vercel.app": {
+    "cluster": "D",
+    "name": "Rocca Cifrata"
+  },
+  "https://fontaniere-coding.vercel.app": {
+    "cluster": "D",
+    "name": "Il Fontaniere"
+  },
+  "https://basket-sacrafamiglia.vercel.app": {
+    "cluster": "D",
+    "name": "Basket Coding"
+  },
+  "https://pollice-verde-rho.vercel.app": {
+    "cluster": "D",
+    "name": "Pollice Verde"
+  },
+  "https://identit-digitale.vercel.app": {
+    "cluster": "D",
+    "name": "Identità Digitale"
+  },
+  "https://anti-alibi.vercel.app": {
+    "cluster": "D",
+    "name": "Anti-Alibi"
+  },
+  "https://ipad-carta.vercel.app": {
+    "cluster": "D",
+    "name": "iPad e Carta"
+  },
+  "https://excel-basic-lesson.vercel.app": {
+    "cluster": "D",
+    "name": "Excel Basic"
+  },
+  "https://magnifica-humanitas-nu.vercel.app": {
+    "cluster": "D",
+    "name": "Magnifica Humanitas"
+  },
+  "https://ai-nuovo-mondo.vercel.app": {
+    "cluster": "D",
+    "name": "AI, il Nuovo Mondo"
+  },
+  "https://pizzeria-sacrafamiglia-iepo.vercel.app": {
+    "cluster": "D",
+    "name": "Pizzeria delle Frazioni"
+  },
+  "https://ai-video-azure.vercel.app": {
+    "cluster": "D",
+    "name": "AI Video"
+  },
+  "https://storia-new.vercel.app": {
+    "cluster": "D",
+    "name": "Viaggio nella Storia"
+  },
+  "https://albo-doro-case.vercel.app": {
+    "cluster": "D",
+    "name": "Albo d'Oro delle Case"
+  },
+  "https://crescerecittadinidigitali.neocities.org": {
+    "cluster": "D",
+    "name": "Crescere Cittadini Digitali"
   }
 };
   
@@ -1012,7 +1084,7 @@
     
     const footer = document.createElement('div');
     footer.className = 'dpia-legend-footer';
-    footer.textContent = 'Aggiornato al 2026-05-29 — ' + Object.keys(URL_MAP).length + ' applicazioni';
+    footer.textContent = 'Aggiornato al 2026-06-14 — ' + Object.keys(URL_MAP).length + ' applicazioni';
     legend.appendChild(footer);
     
     document.body.appendChild(toggle);
