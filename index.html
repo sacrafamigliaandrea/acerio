@@ -29,6 +29,7 @@
             --c-esame: #b45309; --c-esame-bg: #fffbeb; --c-esame-light: #fef3c7;
             --c-coding: #355070; --c-coding-bg: #eef2f7; --c-coding-light: #d8e2ee;
             --c-lezioni: #9a5b3f; --c-lezioni-bg: #f7efe9; --c-lezioni-light: #ecdccf;
+            --c-genitori: #a05a78; --c-genitori-bg: #f9eef3; --c-genitori-light: #f0d8e3;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
@@ -206,6 +207,7 @@
         .card[data-theme="esame"] { --card-color: var(--c-esame); --card-color-bg: var(--c-esame-bg); --card-color-light: var(--c-esame-light); }
         .card[data-theme="coding"] { --card-color: var(--c-coding); --card-color-bg: var(--c-coding-bg); --card-color-light: var(--c-coding-light); }
         .card[data-theme="lezioni"] { --card-color: var(--c-lezioni); --card-color-bg: var(--c-lezioni-bg); --card-color-light: var(--c-lezioni-light); }
+        .card[data-theme="genitori"] { --card-color: var(--c-genitori); --card-color-bg: var(--c-genitori-bg); --card-color-light: var(--c-genitori-light); }
 
         /* ═══ NO RESULTS ═══ */
         @keyframes wobble { 0%,100% { transform:rotate(0); } 25% { transform:rotate(-8deg); } 75% { transform:rotate(8deg); } }
@@ -273,7 +275,7 @@
     </header>
 
     <div class="quick-links">
-        <a href="https://calibro.neocities.org/" target="_blank"><i class="ti ti-plant"></i> Calibro</a>
+        <a href="#genitori" onclick="filterByCategory('genitori');document.getElementById('grid').scrollIntoView({behavior:'smooth'});return false;"><i class="ti ti-home-heart"></i> Genitori</a>
         <a href="https://chatbotai.neocities.org/" target="_blank"><i class="ti ti-robot"></i> Didattica e AI</a>
         <span class="ql-sep"></span>
         <a href="metodologie.html" class="ql-glass"><i class="ti ti-brain"></i> Metodologie</a>
@@ -658,7 +660,7 @@
 
         <!-- ══════ CODING ══════ -->
         <div class="card" data-theme="coding" data-category="coding">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-code"></i></div><div class="card-info"><div class="card-name">Coding</div><span class="card-badge">5 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-code"></i></div><div class="card-info"><div class="card-name">Coding</div><span class="card-badge">6 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://controcorrente-lilac.vercel.app/" target="_blank">
                     <span class="link-num"></span>
@@ -685,12 +687,17 @@
                     <span class="link-text"><span class="link-name">Pollice Verde</span><span class="link-desc">Coltiva il tuo orto digitale con cicli e condizioni di crescita</span></span>
                     <span class="link-go">→</span>
                 </a></li>
+                <li><a href="https://fontana-algoritmica.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Fontana Algoritmica</span><span class="link-desc">Guida il flusso dell'acqua con algoritmi, cicli e condizioni</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
             </ul>
         </div>
 
         <!-- ══════ LEZIONI ══════ -->
         <div class="card" data-theme="lezioni" data-category="lezioni">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-school"></i></div><div class="card-info"><div class="card-name">Lezioni</div><span class="card-badge">6 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-school"></i></div><div class="card-info"><div class="card-name">Lezioni</div><span class="card-badge">7 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://identit-digitale.vercel.app/" target="_blank">
                     <span class="link-num"></span>
@@ -722,13 +729,23 @@
                     <span class="link-text"><span class="link-name">AI, il Nuovo Mondo</span><span class="link-desc">Capire l'intelligenza artificiale: opportunità, limiti e responsabilità</span></span>
                     <span class="link-go">→</span>
                 </a></li>
+                <li><a href="https://attacchi-hacker-2026.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Attacchi Hacker 2026</span><span class="link-desc">Come riconoscere e difendersi dalle minacce informatiche più recenti</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
             </ul>
         </div>
 
         <!-- ══════ APPROFONDIMENTI E RICERCHE ══════ -->
         <div class="card" data-theme="scienze" data-category="scienze">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-search"></i></div><div class="card-info"><div class="card-name">Approfondimenti e Ricerche</div><span class="card-badge">16 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-search"></i></div><div class="card-info"><div class="card-name">Approfondimenti e Ricerche</div><span class="card-badge">17 risorse</span></div></div>
             <ul class="card-list">
+                <li><a href="https://calibro.neocities.org/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Calibro</span><span class="link-desc">Strumento didattico per la crescita e l'autovalutazione</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
                 <li><a href="https://geografiamaps.neocities.org/" target="_blank">
                     <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Gite Virtuali</span><span class="link-desc">Esplora il mondo con Google Maps senza uscire da scuola</span></span>
@@ -846,7 +863,7 @@
 
         <!-- ══════ SACRA FAMIGLIA ══════ -->
         <div class="card" data-theme="scuola" data-category="scuola">
-            <div class="card-head"><div class="card-emoji"><i class="ti ti-heart-handshake"></i></div><div class="card-info"><div class="card-name">Sacra Famiglia</div><span class="card-badge">8 risorse</span></div></div>
+            <div class="card-head"><div class="card-emoji"><i class="ti ti-heart-handshake"></i></div><div class="card-info"><div class="card-name">Sacra Famiglia</div><span class="card-badge">9 risorse</span></div></div>
             <ul class="card-list">
                 <li><a href="https://100anni.neocities.org/" target="_blank">
                     <span class="link-num"></span>
@@ -886,6 +903,11 @@
                 <li><a href="https://albo-doro-case.vercel.app/" target="_blank">
                     <span class="link-num"></span>
                     <span class="link-text"><span class="link-name">Albo d'Oro delle Case</span><span class="link-desc">Le vittorie e i traguardi delle quattro Case nel tempo</span></span>
+                    <span class="link-go">→</span>
+                </a></li>
+                <li><a href="https://quadriappesi.vercel.app/" target="_blank">
+                    <span class="link-num"></span>
+                    <span class="link-text"><span class="link-name">Quadri Appesi</span><span class="link-desc">Galleria virtuale delle opere e dei lavori della scuola</span></span>
                     <span class="link-go">→</span>
                 </a></li>
             </ul>
