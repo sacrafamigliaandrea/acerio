@@ -67,12 +67,6 @@ a{color:var(--indigo);text-decoration:none}
 .lk-err{color:var(--rose);font-size:13px;font-weight:600;min-height:18px;margin-top:10px}
 .lk-aes{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--faint);margin-top:16px;font-weight:600}
 .lk-aes svg{width:13px;height:13px}
-.lk-cloud{margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
-.lk-cloud summary{cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:600;list-style:none}
-.lk-cloud summary::-webkit-details-marker{display:none}
-.lk-cloud input[type=url]{width:100%;height:42px;border:1px solid var(--border);background:var(--surface-2);
-  color:var(--fg);border-radius:10px;padding:0 12px;font-size:13px;margin-top:10px}
-.lk-cloud .hint{font-size:11px;color:var(--faint);margin-top:8px;line-height:1.4;text-align:left}
 
 /* ---------- App shell ---------- */
 .app{max-width:1480px;margin:0 auto;padding:18px clamp(12px,3vw,28px) 64px}
@@ -468,11 +462,6 @@ table.timetable{border-collapse:collapse;width:100%;min-width:760px}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Cifratura AES-256-GCM · PBKDF2 210k
     </div>
-    <details class="lk-cloud">
-      <summary>Opzioni cloud (Google Sheet)</summary>
-      <input type="url" id="lockSyncUrl" placeholder="URL app web Apps Script (…/exec)" />
-      <div class="hint">Opzionale. Se lo imposti, i dati cifrati vengono salvati anche sul tuo Foglio Google e sincronizzati tra dispositivi. Vedi <b>Code.gs</b> per la configurazione.</div>
-    </details>
   </div>
 </div>
 
@@ -663,6 +652,9 @@ const BLOB_KEY = "acerio-blob";      // {v,salt,iter,ct} envelope, AES-256-GCM
 // Backend condiviso (Google Sheet + Apps Script) usato dai tre portali: di default
 // la Suite sincronizza qui. Si può sovrascrivere inserendo un'altra URL nel campo "…/exec".
 const DEFAULT_SYNC_URL = "https://script.google.com/macros/s/AKfycbyBxrxcFF3n3hxF9FDdaNz0FiEzWOWBvruG76umJ5Bk-WOwrqqUcDHvgeOf04mwuGaZ/exec";
+// Token condiviso col backend: deve combaciare con SYNC_TOKEN dentro Code.gs.
+// Non è un segreto crittografico (vive nel client) ma blocca i save/load anonimi.
+const SYNC_TOKEN = "sk_acerio_sync_7Qx2Lp9Vd4Rn8Tz";
 const PBKDF2_ITER = 210000;
 
 /* === ACCESSO ESCLUSIVO (uso personale del proprietario) ====================
@@ -772,7 +764,7 @@ async function persist(){
 }
 async function remoteCall(payload){
   const res = await fetch(meta.syncUrl, {method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)});
+    headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({token:SYNC_TOKEN}, payload))});
   return res.json();
 }
 async function remoteSave(env){ const r=await remoteCall({action:"save",data:env}); if(!r.ok) throw new Error(r.error||"save"); }
@@ -1562,7 +1554,6 @@ let lockMode="unlock"; // or "setup"
 function bootLock(){
   applyTheme();
   const hasBlob = !!localStorage.getItem(BLOB_KEY);
-  $("#lockSyncUrl").value = meta.syncUrl||"";
   if(OWNER_GATE){
     lockMode="unlock";
     $("#lockTitle").textContent="Acerio Suite";
@@ -1585,7 +1576,6 @@ $("#lockForm").addEventListener("submit", async e=>{
   e.preventDefault();
   const err=$("#lockErr");err.textContent="";
   const pwd=$("#lockPwd").value;
-  meta.syncUrl=$("#lockSyncUrl").value.trim();saveMeta();
   if(pwd.length<4){err.textContent="Password troppo corta (min 4 caratteri).";return;}
   $("#lockBtn").disabled=true;$("#lockBtn").textContent="Attendere…";
   try{
