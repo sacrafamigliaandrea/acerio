@@ -660,6 +660,9 @@ const MONTHS = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov
 const MONTHS_FULL = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const META_KEY = "acerio-meta";      // {syncUrl, theme} plaintext
 const BLOB_KEY = "acerio-blob";      // {v,salt,iter,ct} envelope, AES-256-GCM
+// Backend condiviso (Google Sheet + Apps Script) usato dai tre portali: di default
+// la Suite sincronizza qui. Si può sovrascrivere inserendo un'altra URL nel campo "…/exec".
+const DEFAULT_SYNC_URL = "https://script.google.com/macros/s/AKfycbyBxrxcFF3n3hxF9FDdaNz0FiEzWOWBvruG76umJ5Bk-WOwrqqUcDHvgeOf04mwuGaZ/exec";
 const PBKDF2_ITER = 210000;
 
 /* === ACCESSO ESCLUSIVO (uso personale del proprietario) ====================
@@ -751,7 +754,7 @@ function defaultState(){
 }
 let state = defaultState();
 let meta = loadMeta();
-function loadMeta(){try{return Object.assign({syncUrl:"",theme:"light"},JSON.parse(localStorage.getItem(META_KEY)||"{}"));}catch(e){return {syncUrl:"",theme:"light"};}}
+function loadMeta(){try{const m=Object.assign({syncUrl:"",theme:"light"},JSON.parse(localStorage.getItem(META_KEY)||"{}"));if(!m.syncUrl)m.syncUrl=DEFAULT_SYNC_URL;return m;}catch(e){return {syncUrl:DEFAULT_SYNC_URL,theme:"light"};}}
 function saveMeta(){localStorage.setItem(META_KEY, JSON.stringify(meta));}
 
 let currentWeek=0, editMode=false, activeView="week";
