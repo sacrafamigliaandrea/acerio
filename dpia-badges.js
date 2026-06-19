@@ -2,8 +2,8 @@
  * dpia-badges.js
  * Bollini di conformità GDPR/AI Act per il portale Acerio (acerio.vercel.app)
  * 
- * Generato automaticamente da DPIA Studio il 2026-06-16 — aggiornato il 2026-06-17
- * 132 app interne + 0 servizi terzi
+ * Generato automaticamente da DPIA Studio il 2026-06-16 — aggiornato il 2026-06-19
+ * 133 app interne + 0 servizi terzi
  * 
  * Ogni link nel portale che corrisponde a un'app classificata riceve un piccolo
  * badge colorato accanto al nome, indicante il cluster di rischio.
@@ -544,6 +544,10 @@
   "https://acquedotto-mini.vercel.app/index.html": {
     "cluster": "D",
     "name": "Acquedotto Mini"
+  },
+  "https://droni-algoritmici.vercel.app": {
+    "cluster": "D",
+    "name": "Droni Algoritmici"
   },
   "https://braone-rampante.vercel.app": {
     "cluster": "D",
@@ -1112,7 +1116,7 @@
     
     const footer = document.createElement('div');
     footer.className = 'dpia-legend-footer';
-    footer.textContent = 'Aggiornato al 2026-06-17 — ' + Object.keys(URL_MAP).length + ' applicazioni';
+    footer.textContent = 'Aggiornato al 2026-06-19 — ' + Object.keys(URL_MAP).length + ' applicazioni';
     legend.appendChild(footer);
     
     document.body.appendChild(toggle);
