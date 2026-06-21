@@ -157,7 +157,7 @@
     "cluster": "D",
     "name": "Mental Coaching"
   },
-  "https://videoshorts.neocities.org": {
+  "https://shorts-video-acerio.vercel.app": {
     "cluster": "D",
     "name": "Video Shorts"
   },
