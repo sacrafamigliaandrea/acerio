@@ -73,7 +73,7 @@
     "cluster": "D",
     "name": "Il Sicofante Digitale"
   },
-  "https://famigliaaccorti.neocities.org": {
+  "https://famiglia-accorti.vercel.app": {
     "cluster": "D",
     "name": "Famiglia Accorti"
   },
